@@ -12,7 +12,8 @@ import {
   CircularProgress,
   Box,
   Typography,
-  Skeleton
+  Skeleton,
+  IconButton
 } from '@mui/material'
 import LoadingButton from '@mui/lab/LoadingButton'
 import CustomInputViewMode from '@/@menu/components/CustomInputViewMode'
@@ -36,6 +37,7 @@ import OpenDialogOnElementClick from '@/@core/components/dialogs/OpenDialogOnEle
 import FormPrinsipDialog from '@/@core/components/dialogs/form-prinsip'
 import FormSpesifikasiDialog from '@/@core/components/dialogs/form-spesifikasi'
 import FormPencairanDialog from '@/@core/components/dialogs/form-pencairan'
+import PemohonBantuan from '@/@core/components/dialogs/pemohon-bantuan'
 
 export default function Page({ params }: { params: { id: string } }) {
   const { id } = params
@@ -187,12 +189,28 @@ export default function Page({ params }: { params: { id: string } }) {
         ) : (
           <>
             {/* Survey Section */}
-            <Box sx={{ marginBottom: 4 }}>
-              <Typography fontWeight={700} fontSize={16}>
-                A. Survey
-              </Typography>
-              <Typography fontSize={14}>Lorem ipsum dolor sit amet consectetur adipisicing elit.</Typography>
-            </Box>
+            <Stack
+              useFlexGap
+              flexDirection='row'
+              alignItems='center'
+              justifyContent='space-between'
+              sx={{ marginBottom: 4 }}
+            >
+              <Box>
+                <Typography fontWeight={700} fontSize={16}>
+                  A. Survey
+                </Typography>
+                <Typography fontSize={14}>Lorem ipsum dolor sit amet consectetur adipisicing elit.</Typography>
+              </Box>
+              {user?.data.role === 'PENYELIA' && (
+                <OpenDialogOnElementClick
+                  element={IconButton}
+                  elementProps={{ children: <i className='tabler-pencil text-[22px] text-textSecondary' /> }}
+                  dialog={PemohonBantuan}
+                  dialogProps={{ data: applicant }}
+                />
+              )}
+            </Stack>
             <Grid container spacing={4}>
               <Grid item xs={12} md={6}>
                 <CustomInputViewMode label='Kode SI-SABI' value={applicant?._id} />
@@ -229,12 +247,28 @@ export default function Page({ params }: { params: { id: string } }) {
             <Divider sx={{ marginY: 5 }} />
 
             {/* Principle Section */}
-            <Box sx={{ marginBottom: 4 }}>
-              <Typography fontWeight={700} fontSize={16}>
-                B. Prinsip
-              </Typography>
-              <Typography fontSize={14}>Lorem ipsum dolor sit amet consectetur adipisicing elit.</Typography>
-            </Box>
+            <Stack
+              useFlexGap
+              flexDirection='row'
+              alignItems='center'
+              justifyContent='space-between'
+              sx={{ marginBottom: 4 }}
+            >
+              <Box>
+                <Typography fontWeight={700} fontSize={16}>
+                  B. Prinsip
+                </Typography>
+                <Typography fontSize={14}>Lorem ipsum dolor sit amet consectetur adipisicing elit.</Typography>
+              </Box>
+              {user?.data.role === 'PENYELIA' && (
+                <OpenDialogOnElementClick
+                  element={IconButton}
+                  elementProps={{ children: <i className='tabler-pencil text-[22px] text-textSecondary' /> }}
+                  dialog={FormPrinsipDialog}
+                  dialogProps={{ data: applicant }}
+                />
+              )}
+            </Stack>
             <Grid container spacing={4}>
               <Grid item xs={12} md={6}>
                 <CustomInputViewMode label='No. Dokumen' value={applicant?.document_number} />
@@ -255,12 +289,28 @@ export default function Page({ params }: { params: { id: string } }) {
             <Divider sx={{ marginY: 5 }} />
 
             {/* Specification Section */}
-            <Box sx={{ marginBottom: 4 }}>
-              <Typography fontWeight={700} fontSize={16}>
-                C. Spesifikasi
-              </Typography>
-              <Typography fontSize={14}>Lorem ipsum dolor sit amet consectetur adipisicing elit.</Typography>
-            </Box>
+            <Stack
+              useFlexGap
+              flexDirection='row'
+              alignItems='center'
+              justifyContent='space-between'
+              sx={{ marginBottom: 4 }}
+            >
+              <Box>
+                <Typography fontWeight={700} fontSize={16}>
+                  C. Spesifikasi
+                </Typography>
+                <Typography fontSize={14}>Lorem ipsum dolor sit amet consectetur adipisicing elit.</Typography>
+              </Box>
+              {user?.data.role === 'PENYELIA' && (
+                <OpenDialogOnElementClick
+                  element={IconButton}
+                  elementProps={{ children: <i className='tabler-pencil text-[22px] text-textSecondary' /> }}
+                  dialog={FormSpesifikasiDialog}
+                  dialogProps={{ data: applicant }}
+                />
+              )}
+            </Stack>
             <Grid container spacing={4}>
               <Grid item xs={12} md={6}>
                 <CustomInputViewMode
@@ -287,12 +337,28 @@ export default function Page({ params }: { params: { id: string } }) {
             <Divider sx={{ marginY: 5 }} />
 
             {/* Liquefaction Section */}
-            <Box sx={{ marginBottom: 4 }}>
-              <Typography fontWeight={700} fontSize={16}>
-                D. Pencairan
-              </Typography>
-              <Typography fontSize={14}>Lorem ipsum dolor sit amet consectetur adipisicing elit.</Typography>
-            </Box>
+            <Stack
+              useFlexGap
+              flexDirection='row'
+              alignItems='center'
+              justifyContent='space-between'
+              sx={{ marginBottom: 4 }}
+            >
+              <Box>
+                <Typography fontWeight={700} fontSize={16}>
+                  D. Pencairan
+                </Typography>
+                <Typography fontSize={14}>Lorem ipsum dolor sit amet consectetur adipisicing elit.</Typography>
+              </Box>
+              {user?.data.role === 'PENYELIA' && (
+                <OpenDialogOnElementClick
+                  element={IconButton}
+                  elementProps={{ children: <i className='tabler-pencil text-[22px] text-textSecondary' /> }}
+                  dialog={FormPencairanDialog}
+                  dialogProps={{ data: applicant }}
+                />
+              )}
+            </Stack>
             <Grid container spacing={4}>
               <Grid item xs={12} md={6}>
                 <CustomInputViewMode label='Invoice Vendor' value={!!applicant?.vendor_invoice ? 'Ya' : 'Tidak'} />
