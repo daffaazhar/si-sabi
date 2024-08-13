@@ -118,7 +118,7 @@ export default function Page() {
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([])
   const [globalFilter, setGlobalFilter] = useState('')
   const [page, setPage] = useState(0)
-  const [pageSize, setPageSize] = useState(10)
+  const [pageSize, setPageSize] = useState(50)
   const skip = page * pageSize
 
   // ** Advanced Filter State
@@ -171,7 +171,7 @@ export default function Page() {
         header: 'Aksi',
         cell: info => (
           <div className='flex items-center'>
-            <IconButton href={`/pemohon-bantuan/${info.row.original._id}`}>
+            <IconButton href={`/pemohon-bantuan/${info.row.original._id}/${info.row.original.stage.toLowerCase()}`}>
               <i className='tabler-eye text-[22px] text-textSecondary' />
             </IconButton>
             <OpenDialogOnElementClick
@@ -229,11 +229,11 @@ export default function Page() {
             select
             value={pageSize}
             onChange={e => setPageSize(Number(e.target.value))}
-            className='is-[70px]'
+            className='is-[80px]'
           >
-            <MenuItem value='10'>10</MenuItem>
-            <MenuItem value='25'>25</MenuItem>
             <MenuItem value='50'>50</MenuItem>
+            <MenuItem value='100'>100</MenuItem>
+            <MenuItem value='200'>200</MenuItem>
           </CustomTextField>
         </div>
         <div className='flex gap-4 flex-col !items-start is-full sm:flex-row sm:is-auto sm:items-center'>
