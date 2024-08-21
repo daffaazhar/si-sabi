@@ -32,12 +32,12 @@ import { useRejectApplicant } from '@/hooks/applicant/useRejectApplicant'
 import { useSubmitApplicantToSupervisor } from '@/hooks/applicant/useSubmitApplicantToSupervisor'
 
 // Custom Component Imports
-import OpenDialogOnElementClick from '@/@core/components/dialogs/OpenDialogOnElementClick'
 import CustomInputViewMode from '@/@menu/components/CustomInputViewMode'
 
 // Type Imports
 import { ApplicantInstitutionTypeEnum, ApplicantStatusEnum } from '@/types/applicantTypes'
-import PemohonBantuan from '@/@core/components/dialogs/pemohon-bantuan'
+
+// Config Imports
 import {
   applicantInstitutionType,
   applicantOwnershipStatusOptions,
@@ -45,8 +45,6 @@ import {
   applicantSourceOfFundOptions,
   applicantStatusOptions
 } from '@/configs/applicantConfig'
-import { Controller } from 'react-hook-form'
-import CustomTextField from '@/@core/components/mui/TextField'
 
 export default function SurveyPage({ id }: { id: string }) {
   const { data: user } = useMe()
@@ -112,32 +110,24 @@ export default function SurveyPage({ id }: { id: string }) {
               <Skeleton animation='wave' height={50} width={100} />
               <Skeleton animation='wave' height={50} width={100} />
             </Stack>
-          ) : user?.data.role === 'PENYELIA' && applicant?.status === 'MENUNGGU_KONFIRMASI_DARI_PENYELIA' ? (
-            <Stack spacing={2} useFlexGap flexDirection='row' alignItems='center'>
-              <LoadingButton loading={isApproving} type='submit' variant='contained' onClick={handleApproval}>
-                Setujui
-              </LoadingButton>
-              <LoadingButton
-                loading={isRejecting}
-                type='submit'
-                variant='contained'
-                color='error'
-                onClick={handleReject}
-              >
-                Tolak
-              </LoadingButton>
-            </Stack>
           ) : (
-            <Stack spacing={2} useFlexGap flexDirection='row' alignItems='center'>
-              {user?.data.role === 'PENYELIA' && (
-                <OpenDialogOnElementClick
-                  element={Button}
-                  elementProps={{ variant: 'contained', color: 'secondary', children: 'Ubah' }}
-                  dialog={PemohonBantuan}
-                  dialogProps={{ data: applicant }}
-                />
-              )}
-            </Stack>
+            user?.data.role === 'PENYELIA' &&
+            applicant?.status === 'MENUNGGU_KONFIRMASI_DARI_PENYELIA' && (
+              <Stack spacing={2} useFlexGap flexDirection='row' alignItems='center'>
+                <LoadingButton loading={isApproving} type='submit' variant='contained' onClick={handleApproval}>
+                  Setujui
+                </LoadingButton>
+                <LoadingButton
+                  loading={isRejecting}
+                  type='submit'
+                  variant='contained'
+                  color='error'
+                  onClick={handleReject}
+                >
+                  Tolak
+                </LoadingButton>
+              </Stack>
+            )
           )
         }
       />
