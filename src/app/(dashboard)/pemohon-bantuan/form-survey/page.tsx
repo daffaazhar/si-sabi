@@ -65,10 +65,10 @@ export default function Page() {
       <Divider sx={{ m: '0 !important' }} />
       <CardActions sx={{ justifyContent: 'end' }}>
         <LoadingButton loading={isCreating} type='submit' variant='contained' color='primary'>
-          Save
+          Simpan
         </LoadingButton>
-        <Button variant='tonal' color='secondary'>
-          Discard
+        <Button variant='tonal' color='secondary' href='/pemohon-bantuan'>
+          Kembali
         </Button>
       </CardActions>
     </Card>
