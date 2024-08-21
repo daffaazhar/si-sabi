@@ -55,7 +55,6 @@ export default function SurveyPage({ id }: { id: string }) {
   } = useFetchDetailApplicant(id)
   const { mutate: approve, isPending: isApproving } = useApproveApplicant()
   const { mutate: reject, isPending: isRejecting } = useRejectApplicant()
-  const { mutate: submitToSupervisor, isPending: isSubmittingToSupervisor } = useSubmitApplicantToSupervisor()
 
   const handleApproval = () => {
     const mutationPromise = new Promise((resolve, reject) => {
@@ -81,20 +80,6 @@ export default function SurveyPage({ id }: { id: string }) {
     toast.promise(mutationPromise, {
       loading: 'Menolak data pemohon...',
       success: 'Data pemohon berhasil ditolak',
-      error: 'Terjadi kesalahan'
-    })
-  }
-
-  const handleSubmitToSupervisor = () => {
-    const mutationPromise = new Promise((resolve, reject) => {
-      submitToSupervisor(id, {
-        onSuccess: data => resolve(data),
-        onError: error => reject(error)
-      })
-    })
-    toast.promise(mutationPromise, {
-      loading: 'Mengajukan data ke penyelia...',
-      success: 'Data pemohon berhasil diajukan ke penyelia',
       error: 'Terjadi kesalahan'
     })
   }
