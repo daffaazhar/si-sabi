@@ -33,6 +33,8 @@ import { useSubmitApplicantToSupervisor } from '@/hooks/applicant/useSubmitAppli
 import OpenDialogOnElementClick from '@/@core/components/dialogs/OpenDialogOnElementClick'
 import CustomInputViewMode from '@/@menu/components/CustomInputViewMode'
 import FormSpesifikasiDialog from '@/@core/components/dialogs/form-spesifikasi'
+import dayjs from 'dayjs'
+import React from 'react'
 
 export default function SpesifikasiPage({ id }: { id: string }) {
   const { data: user } = useMe()
@@ -120,12 +122,9 @@ export default function SpesifikasiPage({ id }: { id: string }) {
               {user?.data.role === 'STAFF' &&
                 applicant?.stage === 'SPESIFIKASI' &&
                 applicant?.status === 'SIAP_UNTUK_MENGISI_FORM_SPESIFIKASI' && (
-                  <OpenDialogOnElementClick
-                    element={Button}
-                    elementProps={{ variant: 'contained', color: 'secondary', children: 'Isi Form Prinsip' }}
-                    dialog={FormSpesifikasiDialog}
-                    dialogProps={{ data: applicant }}
-                  />
+                  <Button variant='contained' color='secondary' href={`/pemohon-bantuan/${id}/form-spesifikasi`}>
+                    Isi Form Spesifikasi
+                  </Button>
                 )}
               {user?.data.role === 'STAFF' &&
                 applicant?.stage === 'SPESIFIKASI' &&
@@ -140,14 +139,12 @@ export default function SpesifikasiPage({ id }: { id: string }) {
                     Ajukan ke Penyelia
                   </LoadingButton>
                 )}
-              {user?.data.role === 'PENYELIA' && ['SPESIFIKASI', 'PENCAIRAN'].includes(applicant?.stage) && (
-                <OpenDialogOnElementClick
-                  element={Button}
-                  elementProps={{ variant: 'contained', color: 'secondary', children: 'Ubah' }}
-                  dialog={FormSpesifikasiDialog}
-                  dialogProps={{ data: applicant }}
-                />
-              )}
+              {user?.data.role === 'PENYELIA' &&
+                ['SPESIFIKASI', 'PENCAIRAN', 'PERTANGGUNGJAWABAN'].includes(applicant?.stage) && (
+                  <Button variant='contained' color='secondary' href={`/pemohon-bantuan/${id}/form-spesifikasi`}>
+                    Ubah
+                  </Button>
+                )}
             </Stack>
           )
         }
@@ -158,7 +155,7 @@ export default function SpesifikasiPage({ id }: { id: string }) {
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <CircularProgress />
           </Box>
-        ) : !['SPESIFIKASI', 'PENCAIRAN'].includes(applicant?.stage) ? (
+        ) : !['SPESIFIKASI', 'PENCAIRAN', 'PERTANGGUNGJAWABAN'].includes(applicant?.stage) ? (
           <Stack sx={{ p: 12, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
             <Image
               width={150}
@@ -177,29 +174,147 @@ export default function SpesifikasiPage({ id }: { id: string }) {
             </Box>
           </Stack>
         ) : (
-          <Grid container spacing={4}>
-            <Grid item xs={12} md={6}>
-              <CustomInputViewMode
-                label='Dokumen Penawaran Vendor'
-                value={applicant?.vendor_bid_documents ? 'Ya' : 'Tidak'}
-              />
+          <>
+            <Grid container spacing={4}>
+              <Grid item xs={12}>
+                <Typography fontWeight={600} fontSize={16}>
+                  Memorandum
+                </Typography>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <CustomInputViewMode label='Nomor' value={applicant?.principle_memo_number} />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <CustomInputViewMode label='Perihal' value={applicant?.principle_memo_regard} />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <CustomInputViewMode
+                  label='Tanggal'
+                  value={
+                    !!applicant?.principle_memo_date
+                      ? dayjs(applicant?.principle_memo_date).format('D MMM YYYY')
+                      : undefined
+                  }
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={12} md={6}>
-              <CustomInputViewMode label='SPK Vendor' value={applicant?.vendor_spk ? 'Ya' : 'Tidak'} />
+
+            <Divider sx={{ marginY: 5 }} />
+
+            <Grid container spacing={4}>
+              <Grid item xs={12}>
+                <Typography fontWeight={600} fontSize={16}>
+                  Penanggungjawab
+                </Typography>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <CustomInputViewMode label='Ditulis Oleh' value={applicant?.specification_writed_by} />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <CustomInputViewMode label='Dipersiapkan Oleh' value={applicant?.specification_prepared_by} />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <CustomInputViewMode label='Diperiksa Oleh' value={applicant?.specification_checked_by} />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <CustomInputViewMode label='Didukung Oleh' value={applicant?.specification_supported_by} />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <CustomInputViewMode label='Disetujui Oleh' value={applicant?.specification_approved_by} />
+              </Grid>
             </Grid>
-            <Grid item xs={12} md={6}>
-              <CustomInputViewMode
-                label='Surat Pemberitahuan kepada Penerima PSBI'
-                value={applicant?.notification_letter ? 'Ya' : 'Tidak'}
-              />
+
+            <Divider sx={{ marginY: 5 }} />
+
+            <Grid container spacing={4}>
+              <Grid item xs={12}>
+                <Typography fontWeight={600} fontSize={16}>
+                  Vendor
+                </Typography>
+              </Grid>
+              {applicant?.vendor.length > 0 ? (
+                applicant?.vendor.map((item: any, index: number) => (
+                  <React.Fragment key={`vendor-${index}`}>
+                    <Grid item xs={12} md={4}>
+                      <CustomInputViewMode label={`Nama Vendor ${index + 1}`} value={item?.vendor_name} />
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                      <CustomInputViewMode label='Nomor Surat' value={item?.letter_number} />
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                      <CustomInputViewMode
+                        label='Tanggal'
+                        value={!!item?.letter_date ? dayjs(item?.letter_date).format('D MMMM YYYY') : undefined}
+                      />
+                    </Grid>
+                  </React.Fragment>
+                ))
+              ) : (
+                <Grid item xs={12}>
+                  <Typography>Belum ada data vendor</Typography>
+                </Grid>
+              )}
             </Grid>
-            <Grid item xs={12} md={6}>
-              <CustomInputViewMode
-                label='Besaran dengan Nominal'
-                value={!!applicant?.nominal ? `Rp ${applicant?.nominal}` : undefined}
-              />
+
+            <Divider sx={{ marginY: 5 }} />
+
+            <Grid container spacing={4}>
+              <Grid item xs={12}>
+                <Typography fontWeight={600} fontSize={16}>
+                  SPK
+                </Typography>
+              </Grid>
+              {applicant?.spk.length > 0 ? (
+                applicant?.spk.map((item: any, index: number) => (
+                  <React.Fragment key={`spk-${index}`}>
+                    <Grid item xs={12} md={4}>
+                      <CustomInputViewMode label={`Nama Vendor Terpilih ${index + 1}`} value={item?.choosed_vendor} />
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                      <CustomInputViewMode label='Nomor SPK' value={item?.spk_number} />
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                      <CustomInputViewMode
+                        label='Tanggal'
+                        value={!!item?.date ? dayjs(item?.date).format('D MMMM YYYY') : undefined}
+                      />
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                      <CustomInputViewMode label='Nominal Disetujui' value={'Rp ' + item?.approved_amount.toString()} />
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                      <CustomInputViewMode label='Alamat' value={item?.address} />
+                    </Grid>
+                    <Grid item xs={12} md={4}>
+                      <CustomInputViewMode label='No. HP Vendor' value={item?.phone_number_vendor} />
+                    </Grid>
+                    {index !== applicant?.spk.length - 1 && (
+                      <Grid item xs={12}>
+                        <Divider sx={{ m: '0 !important' }} />
+                      </Grid>
+                    )}
+                  </React.Fragment>
+                ))
+              ) : (
+                <Grid item xs={12}>
+                  <Typography>Belum ada data SPK</Typography>
+                </Grid>
+              )}
             </Grid>
-          </Grid>
+
+            <Divider sx={{ marginY: 5 }} />
+
+            <Grid container spacing={4}>
+              <Grid item xs={12}>
+                <Typography fontWeight={600} fontSize={16}>
+                  Bantuan
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <CustomInputViewMode label='Besaran Bantuan' value={'Rp ' + applicant?.fund_nominal.toString()} />
+              </Grid>
+            </Grid>
+          </>
         )}
       </CardContent>
     </Card>

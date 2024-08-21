@@ -24,11 +24,12 @@ export const PATCH = async (req: Request, { params }: { params: { id: string } }
     }
 
     // Urutan tahapan dan status
-    const stages = ['SURVEY', 'PRINSIP', 'SPESIFIKASI', 'PENCAIRAN']
+    const stages = ['SURVEY', 'PRINSIP', 'SPESIFIKASI', 'PENCAIRAN', 'PERTANGGUNGJAWABAN']
     const statuses = [
       'SIAP_UNTUK_MENGISI_FORM_PRINSIP',
       'SIAP_UNTUK_MENGISI_FORM_SPESIFIKASI',
       'SIAP_UNTUK_MENGISI_FORM_PENCAIRAN',
+      'SIAP_UNTUK_MENGISI_FORM_PERTANGGUNGJAWABAN',
       'SELESAI'
     ]
 

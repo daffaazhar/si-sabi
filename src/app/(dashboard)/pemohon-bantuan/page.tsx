@@ -57,6 +57,7 @@ import ChevronRight from '@/@menu/svg/ChevronRight'
 import { ICON_IDS } from '@/data/iconIds'
 import { ApplicantStatusEnum } from '@/types/applicantTypes'
 import { useRouter } from 'next/navigation'
+import { applicantStatusOptions } from '@/configs/applicantConfig'
 
 const columnHelper = createColumnHelper<any>()
 
@@ -145,23 +146,23 @@ export default function Page() {
       columnHelper.accessor('status', {
         cell: info => {
           const statusKey = info.getValue() as keyof typeof ApplicantStatusEnum
-          const statusLabel = ApplicantStatusEnum[statusKey]
 
           return (
             <Chip
               color={
-                statusKey === 'MENUNGGU_KONFIRMASI_DARI_PENYELIA'
+                statusKey === ApplicantStatusEnum.MENUNGGU_KONFIRMASI_DARI_PENYELIA
                   ? 'warning'
-                  : statusKey === 'SIAP_UNTUK_MENGISI_FORM_PENCAIRAN' ||
-                      statusKey === 'SIAP_UNTUK_MENGISI_FORM_PRINSIP' ||
-                      statusKey === 'SIAP_UNTUK_MENGISI_FORM_SPESIFIKASI'
+                  : statusKey === ApplicantStatusEnum.SIAP_UNTUK_MENGISI_FORM_PENCAIRAN ||
+                      statusKey === ApplicantStatusEnum.SIAP_UNTUK_MENGISI_FORM_PRINSIP ||
+                      statusKey === ApplicantStatusEnum.SIAP_UNTUK_MENGISI_FORM_SPESIFIKASI ||
+                      statusKey === ApplicantStatusEnum.SIAP_UNTUK_MENGISI_FORM_PERTANGGUNGJAWABAN
                     ? 'info'
-                    : statusKey === 'DITOLAK'
+                    : statusKey === ApplicantStatusEnum.DITOLAK
                       ? 'error'
                       : 'primary'
               }
               size='small'
-              label={statusLabel}
+              label={applicantStatusOptions.find(option => option.value === statusKey)?.label}
             />
           )
         },
@@ -251,11 +252,9 @@ export default function Page() {
             onChange={value => setGlobalFilter(String(value))}
             placeholder='Cari sesuatu disini...'
           />
-          <OpenDialogOnElementClick
-            element={Button}
-            elementProps={{ variant: 'contained', children: 'Tambah Pemohon Bantuan' }}
-            dialog={PemohonBantuanDialog}
-          />
+          <Button variant='contained' href='/pemohon-bantuan/form-survey'>
+            Tambah Pemohon Bantuan
+          </Button>
         </div>
       </div>
       <Collapse in={isFilterOpen} timeout='auto'>

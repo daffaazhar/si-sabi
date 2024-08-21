@@ -12,7 +12,12 @@ import {
   Chip,
   CircularProgress,
   Box,
-  Skeleton
+  Skeleton,
+  FormLabel,
+  FormGroup,
+  Typography,
+  FormControlLabel,
+  Checkbox
 } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
 
@@ -31,8 +36,17 @@ import OpenDialogOnElementClick from '@/@core/components/dialogs/OpenDialogOnEle
 import CustomInputViewMode from '@/@menu/components/CustomInputViewMode'
 
 // Type Imports
-import { ApplicantStatusEnum } from '@/types/applicantTypes'
+import { ApplicantInstitutionTypeEnum, ApplicantStatusEnum } from '@/types/applicantTypes'
 import PemohonBantuan from '@/@core/components/dialogs/pemohon-bantuan'
+import {
+  applicantInstitutionType,
+  applicantOwnershipStatusOptions,
+  applicantPsbiScopeOptions,
+  applicantSourceOfFundOptions,
+  applicantStatusOptions
+} from '@/configs/applicantConfig'
+import { Controller } from 'react-hook-form'
+import CustomTextField from '@/@core/components/mui/TextField'
 
 export default function SurveyPage({ id }: { id: string }) {
   const { data: user } = useMe()
@@ -134,39 +148,252 @@ export default function SurveyPage({ id }: { id: string }) {
             <CircularProgress />
           </Box>
         ) : (
-          <Grid container spacing={4}>
-            <Grid item xs={12} md={6}>
-              <CustomInputViewMode label='Kode SI-SABI' value={applicant?._id} />
+          <>
+            <Grid container spacing={4}>
+              <Grid item xs={12} md={6}>
+                <CustomInputViewMode label='Kode SI-SABI' value={applicant?._id} />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <CustomInputViewMode
+                  label='Status'
+                  valueComponent={
+                    <Chip
+                      color={
+                        applicant?.status === ApplicantStatusEnum.MENUNGGU_KONFIRMASI_DARI_PENYELIA
+                          ? 'warning'
+                          : applicant?.status === ApplicantStatusEnum.SIAP_UNTUK_MENGISI_FORM_PENCAIRAN ||
+                              applicant?.status === ApplicantStatusEnum.SIAP_UNTUK_MENGISI_FORM_PRINSIP ||
+                              applicant?.status === ApplicantStatusEnum.SIAP_UNTUK_MENGISI_FORM_SPESIFIKASI ||
+                              applicant?.status === ApplicantStatusEnum.SIAP_UNTUK_MENGISI_FORM_PERTANGGUNGJAWABAN
+                            ? 'info'
+                            : applicant?.status === ApplicantStatusEnum.DITOLAK
+                              ? 'error'
+                              : 'primary'
+                      }
+                      size='small'
+                      label={applicantStatusOptions.find(option => option.value === applicant?.status)?.label}
+                    />
+                  }
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <CustomInputViewMode label='Nama Pemohon' value={applicant?.name} />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <CustomInputViewMode label='Kegiatan Permohonan' value={applicant?.activity_name} />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <CustomInputViewMode label='Provinsi' value={applicant?.province} />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <CustomInputViewMode label='Kabupaten/Kota' value={applicant?.city} />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <CustomInputViewMode label='Kecamatan' value={applicant?.subdistrict} />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <CustomInputViewMode label='Desa/Kelurahan' value={applicant?.village} />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <CustomInputViewMode label='Alamat' value={applicant?.address} />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <CustomInputViewMode label='Kontak Lembaga Pemohon' value={applicant?.contact} />
+              </Grid>
+              <Grid item sm={12}>
+                <div>
+                  <FormLabel sx={{ fontSize: 13 }}>Jenis Lembaga</FormLabel>
+                  <FormGroup sx={{ marginTop: 2 }}>
+                    <Grid container>
+                      <Grid item xs={2}>
+                        <Typography sx={{ fontSize: 13 }}>Pendidikan</Typography>
+                      </Grid>
+                      <Grid item xs={10}>
+                        <Grid container>
+                          {applicantInstitutionType
+                            .filter(x => x.category === 'PENDIDIKAN')
+                            .map(item => (
+                              <Grid key={item.value} item xs={4}>
+                                <FormControlLabel
+                                  control={
+                                    <Checkbox
+                                      value={item.value}
+                                      checked={applicant?.institution_type.includes(item.value)}
+                                    />
+                                  }
+                                  label={
+                                    <Typography>
+                                      {item.value !== ApplicantInstitutionTypeEnum.LAINNYA_PENDIDIKAN
+                                        ? item.label
+                                        : applicant?.other_institution_education_type || 'Lainnya'}
+                                    </Typography>
+                                  }
+                                />
+                              </Grid>
+                            ))}
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                    <Grid container>
+                      <Grid item xs={2}>
+                        <Typography sx={{ fontSize: 13 }}>Keagamaan</Typography>
+                      </Grid>
+                      <Grid item xs={10}>
+                        <Grid container>
+                          {applicantInstitutionType
+                            .filter(x => x.category === 'KEAGAMAAN')
+                            .map(item => (
+                              <Grid key={item.value} item xs={4}>
+                                <FormControlLabel
+                                  control={
+                                    <Checkbox
+                                      value={item.value}
+                                      checked={applicant?.institution_type.includes(item.value)}
+                                    />
+                                  }
+                                  label={
+                                    <Typography>
+                                      {item.value !== ApplicantInstitutionTypeEnum.LAINNYA_KEAGAMAAN
+                                        ? item.label
+                                        : applicant?.other_institution_religion_type || 'Lainnya'}
+                                    </Typography>
+                                  }
+                                />
+                              </Grid>
+                            ))}
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                    <Grid container>
+                      <Grid item xs={2}>
+                        <Typography sx={{ fontSize: 13 }}>Lembaga</Typography>
+                      </Grid>
+                      <Grid item xs={10}>
+                        <Grid container>
+                          {applicantInstitutionType
+                            .filter(x => x.category === 'LEMBAGA')
+                            .map(item => (
+                              <Grid key={item.value} item xs={4}>
+                                <FormControlLabel
+                                  control={
+                                    <Checkbox
+                                      value={item.value}
+                                      checked={applicant?.institution_type.includes(item.value)}
+                                    />
+                                  }
+                                  label={
+                                    <Typography>
+                                      {item.value !== ApplicantInstitutionTypeEnum.LAINNYA_LEMBAGA
+                                        ? item.label
+                                        : applicant?.other_institution_type || 'Lainnya'}
+                                    </Typography>
+                                  }
+                                />
+                              </Grid>
+                            ))}
+                        </Grid>
+                      </Grid>
+                    </Grid>
+                  </FormGroup>
+                </div>
+              </Grid>
+              <Grid item sm={12}>
+                <div>
+                  <FormLabel sx={{ fontSize: 13 }}>Ruang Lingkup PSBI</FormLabel>
+                  <FormGroup>
+                    <Grid container columnSpacing={6}>
+                      {applicantPsbiScopeOptions.map(item => (
+                        <Grid key={item.value} item xs={12} md={4}>
+                          <FormControlLabel
+                            control={
+                              <Checkbox value={item.value} checked={applicant?.psbi_scope.includes(item.value)} />
+                            }
+                            label={<Typography>{item.label}</Typography>}
+                          />
+                        </Grid>
+                      ))}
+                    </Grid>
+                  </FormGroup>
+                </div>
+              </Grid>
             </Grid>
-            <Grid item xs={12} md={6}>
-              <CustomInputViewMode label='Nama Pemohon' value={applicant?.name} />
+
+            <Divider sx={{ marginY: 5 }} />
+
+            <Grid container spacing={4}>
+              <Grid item xs={12}>
+                <Typography fontWeight={600} fontSize={16}>
+                  Gambaran Umum Kelembagaan
+                </Typography>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <CustomInputViewMode label='Tahun Berdirinya Lembaga' value={applicant?.year_founded.toString()} />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <CustomInputViewMode
+                  label='Jenis Kelembagaan'
+                  value={
+                    applicantOwnershipStatusOptions.find(item => item.value === applicant?.ownership_status)?.label
+                  }
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <CustomInputViewMode
+                  label='Lembaga Memiliki Kepengurusan/Kepanitiaan'
+                  value={!!applicant?.have_committee ? 'Ya' : 'Tidak'}
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <CustomInputViewMode
+                  label='Jumlah Anggota pada Lembaga'
+                  value={applicant?.number_of_members.toString()}
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <CustomInputViewMode
+                  label='Jumlah Pengurus/Panitia pada Lembaga'
+                  value={applicant?.number_of_committee.toString()}
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <CustomInputViewMode
+                  label='Sumber Dana Lembaga'
+                  value={applicantSourceOfFundOptions.find(item => item.value === applicant?.source_of_fund)?.label}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <CustomInputViewMode
+                  label='Kegiatan Apa yang Pernah Dilaksanakan oleh Lembaga?'
+                  value={applicant?.carried_out_activities}
+                />
+              </Grid>
             </Grid>
-            <Grid item xs={12} md={6}>
-              <CustomInputViewMode label='Tahap' value={applicant?.stage} />
+
+            <Divider sx={{ marginY: 5 }} />
+
+            <Grid container spacing={4}>
+              <Grid item xs={12}>
+                <Typography fontWeight={600} fontSize={16}>
+                  Kegiatan
+                </Typography>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <CustomInputViewMode
+                  label='Jumlah Penerima Manfaat'
+                  value={`${applicant?.number_of_beneficiaries.toString()} Orang`}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <CustomInputViewMode
+                  label='Dana yang Dibutuhkan'
+                  value={`Rp ${applicant?.required_funds.toString()}`}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <CustomInputViewMode label='Tujuan/Manfaat Kegiatan' value={applicant?.activity_goals} />
+              </Grid>
             </Grid>
-            <Grid item xs={12} md={6}>
-              <CustomInputViewMode
-                label='Status'
-                valueComponent={
-                  <Chip
-                    color={
-                      applicant?.status === 'MENUNGGU_KONFIRMASI_DARI_PENYELIA'
-                        ? 'warning'
-                        : applicant?.status === 'SIAP_UNTUK_MENGISI_FORM_PENCAIRAN' ||
-                            applicant?.status === 'SIAP_UNTUK_MENGISI_FORM_PRINSIP' ||
-                            applicant?.status === 'SIAP_UNTUK_MENGISI_FORM_SPESIFIKASI'
-                          ? 'info'
-                          : applicant?.status === 'DITOLAK'
-                            ? 'error'
-                            : 'primary'
-                    }
-                    size='small'
-                    label={ApplicantStatusEnum[applicant?.status as keyof typeof ApplicantStatusEnum]}
-                  />
-                }
-              />
-            </Grid>
-          </Grid>
+          </>
         )}
       </CardContent>
     </Card>

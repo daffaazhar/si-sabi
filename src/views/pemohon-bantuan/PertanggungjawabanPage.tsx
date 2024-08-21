@@ -15,7 +15,9 @@ import {
   CircularProgress,
   Box,
   Typography,
-  Skeleton
+  Skeleton,
+  FormControlLabel,
+  Checkbox
 } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
 
@@ -31,12 +33,9 @@ import { useRejectApplicant } from '@/hooks/applicant/useRejectApplicant'
 import { useSubmitApplicantToSupervisor } from '@/hooks/applicant/useSubmitApplicantToSupervisor'
 
 // Custom Component Imports
-import OpenDialogOnElementClick from '@/@core/components/dialogs/OpenDialogOnElementClick'
 import CustomInputViewMode from '@/@menu/components/CustomInputViewMode'
-import FormPrinsipDialog from '@/@core/components/dialogs/form-prinsip'
-import React from 'react'
 
-export default function PrinsipPage({ id }: { id: string }) {
+export default function PertanggungjawabanPage({ id }: { id: string }) {
   const { data: user } = useMe()
   const {
     data: applicant,
@@ -92,8 +91,8 @@ export default function PrinsipPage({ id }: { id: string }) {
   return (
     <Card>
       <CardHeader
-        title={`Informasi Detail Tahap Prinsip`}
-        subheader='Informasi Detail Pemohon Bantuan pada Tahap Prinsip'
+        title={`Informasi Detail Pertanggungjawaban`}
+        subheader='Informasi Detail Pemohon Bantuan pada Pertanggungjawaban'
         action={
           isApplicantFetching || isApplicantPending ? (
             <Stack spacing={2} useFlexGap flexDirection='row' alignItems='center'>
@@ -101,7 +100,7 @@ export default function PrinsipPage({ id }: { id: string }) {
               <Skeleton animation='wave' height={50} width={100} />
             </Stack>
           ) : user?.data.role === 'PENYELIA' &&
-            applicant?.stage === 'PRINSIP' &&
+            applicant?.stage === 'PERTANGGUNGJAWABAN' &&
             applicant?.status === 'MENUNGGU_KONFIRMASI_DARI_PENYELIA' ? (
             <Stack spacing={2} useFlexGap flexDirection='row' alignItems='center'>
               <LoadingButton loading={isApproving} type='submit' variant='contained' onClick={handleApproval}>
@@ -120,14 +119,14 @@ export default function PrinsipPage({ id }: { id: string }) {
           ) : (
             <Stack spacing={2} useFlexGap flexDirection='row' alignItems='center'>
               {user?.data.role === 'STAFF' &&
-                applicant?.stage === 'PRINSIP' &&
-                applicant?.status === 'SIAP_UNTUK_MENGISI_FORM_PRINSIP' && (
-                  <Button variant='contained' color='secondary' href={`/pemohon-bantuan/${id}/form-prinsip`}>
-                    Isi Form Prinsip
+                applicant?.stage === 'PERTANGGUNGJAWABAN' &&
+                applicant?.status === 'SIAP_UNTUK_MENGISI_FORM_PERTANGGUNGJAWABAN' && (
+                  <Button variant='contained' color='secondary' href={`/pemohon-bantuan/${id}/form-pertanggungjawaban`}>
+                    Isi Form Pertanggungjawaban
                   </Button>
                 )}
               {user?.data.role === 'STAFF' &&
-                applicant?.stage === 'PRINSIP' &&
+                applicant?.stage === 'PERTANGGUNGJAWABAN' &&
                 !['MENUNGGU_KONFIRMASI_DARI_PENYELIA', 'SELESAI', 'DITOLAK'].includes(applicant?.status) && (
                   <LoadingButton
                     loading={isSubmittingToSupervisor}
@@ -139,12 +138,11 @@ export default function PrinsipPage({ id }: { id: string }) {
                     Ajukan ke Penyelia
                   </LoadingButton>
                 )}
-              {user?.data.role === 'PENYELIA' &&
-                ['PRINSIP', 'SPESIFIKASI', 'PENCAIRAN', 'PERTANGGUNGJAWABAN'].includes(applicant?.stage) && (
-                  <Button variant='contained' color='secondary' href={`/pemohon-bantuan/${id}/form-prinsip`}>
-                    Ubah
-                  </Button>
-                )}
+              {user?.data.role === 'PENYELIA' && ['PERTANGGUNGJAWABAN'].includes(applicant?.stage) && (
+                <Button variant='contained' color='secondary' href={`/pemohon-bantuan/${id}/form-pertanggungjawaban`}>
+                  Ubah
+                </Button>
+              )}
             </Stack>
           )
         }
@@ -155,7 +153,7 @@ export default function PrinsipPage({ id }: { id: string }) {
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <CircularProgress />
           </Box>
-        ) : !['PRINSIP', 'SPESIFIKASI', 'PENCAIRAN', 'PERTANGGUNGJAWABAN'].includes(applicant?.stage) ? (
+        ) : !['PERTANGGUNGJAWABAN'].includes(applicant?.stage) ? (
           <Stack sx={{ p: 12, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
             <Image
               width={150}
@@ -169,96 +167,40 @@ export default function PrinsipPage({ id }: { id: string }) {
                 Oops! Anda Tidak Dapat Mengakses Halaman Ini 😖
               </Typography>
               <Typography sx={{ mb: 6, color: 'text.secondary' }}>
-                Hal ini dikarenakan data pemohon bantuan ini belum mencapai tahap Prinsip
+                Hal ini dikarenakan data pemohon bantuan ini belum mencapai tahap pertanggungjawaban
               </Typography>
             </Box>
           </Stack>
         ) : (
           <>
             <Grid container spacing={4}>
-              <Grid item xs={12}>
-                <Typography fontWeight={600} fontSize={16}>
-                  Memorandum
-                </Typography>
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <CustomInputViewMode label='Nomor' value={applicant?.principle_memo_number} />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <CustomInputViewMode label='Perihal' value={applicant?.principle_memo_regard} />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <CustomInputViewMode
-                  label='Tanggal'
-                  value={
-                    !!applicant?.principle_memo_date
-                      ? dayjs(applicant?.principle_memo_date).format('D MMM YYYY')
-                      : undefined
-                  }
-                />
-              </Grid>
-            </Grid>
-
-            <Divider sx={{ marginY: 5 }} />
-
-            <Grid container spacing={4}>
-              <Grid item xs={12}>
-                <Typography fontWeight={600} fontSize={16}>
-                  Penanggungjawab
-                </Typography>
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <CustomInputViewMode label='Ditulis Oleh' value={applicant?.principle_writed_by} />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <CustomInputViewMode label='Dipersiapkan Oleh' value={applicant?.principle_prepared_by} />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <CustomInputViewMode label='Diperiksa Oleh' value={applicant?.principle_checked_by} />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <CustomInputViewMode label='Didukung Oleh' value={applicant?.principle_supported_by} />
-              </Grid>
-              <Grid item xs={12} md={4}>
-                <CustomInputViewMode label='Disetujui Oleh' value={applicant?.principle_approved_by} />
-              </Grid>
-            </Grid>
-
-            <Divider sx={{ marginY: 5 }} />
-
-            <Grid container spacing={4}>
-              <Grid item xs={12}>
-                <Typography fontWeight={600} fontSize={16}>
-                  Bantuan
-                </Typography>
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <CustomInputViewMode label='Klasifikasi PSBI' value={applicant?.psbi_classification} />
-              </Grid>
-              <Grid item xs={12} md={6}>
-                <CustomInputViewMode label='Usulan Bantuan' value={applicant?.proposed_fund} />
-              </Grid>
-              {applicant?.proposed_fund_item.map((item: any, index: number) => (
-                <React.Fragment key={`item-${index}`}>
-                  <Grid item xs={12} md={6}>
-                    <CustomInputViewMode label={`Nama Barang ${index + 1}`} value={item.item_name} />
-                  </Grid>
-                  <Grid item xs={12} md={6}>
-                    <CustomInputViewMode label={`Jumlah Barang ${index + 1}`} value={item.item_quantity.toString()} />
-                  </Grid>
-                </React.Fragment>
-              ))}
-              {applicant?.proposed_fund_construction.map((item: any, index: number) => (
-                <Grid item xs={12} md={12} key={`construction-${index}`}>
-                  <CustomInputViewMode label={`Nama Jasa ${index + 1}`} value={item.service_name} />
+              {applicant?.fund_nominal > 0 && (
+                <Grid item xs={12} md={4}>
+                  <FormControlLabel
+                    label='BAST'
+                    labelPlacement='end'
+                    control={<Checkbox value={applicant?.bast} checked={applicant?.bast} />}
+                  />
                 </Grid>
-              ))}
-              <Grid item xs={12} md={6}>
-                <CustomInputViewMode
-                  label='Usulan Besaran'
-                  value={'Rp ' + applicant?.proposed_fund_nominal.toString()}
-                />
-              </Grid>
+              )}
+              {applicant?.fund_nominal > 25000000 && (
+                <Grid item xs={12} md={4}>
+                  <FormControlLabel
+                    label='Surat Pernyataan'
+                    labelPlacement='end'
+                    control={<Checkbox value={applicant?.statement_letter} checked={applicant?.statement_letter} />}
+                  />
+                </Grid>
+              )}
+              {applicant?.fund_nominal > 50000000 && (
+                <Grid item xs={12} md={4}>
+                  <FormControlLabel
+                    label='Laporan Penggunaan Bantuan'
+                    labelPlacement='end'
+                    control={<Checkbox value={applicant?.usage_report} checked={applicant?.usage_report} />}
+                  />
+                </Grid>
+              )}
             </Grid>
           </>
         )}

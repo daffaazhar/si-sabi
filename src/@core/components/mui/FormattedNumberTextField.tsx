@@ -1,3 +1,5 @@
+'use client'
+
 // ** Next & React Imports
 import { useRef } from 'react'
 
@@ -9,13 +11,6 @@ import CustomTextField from './TextField'
 
 // ** Third Party Imports
 import { Controller, useFormContext } from 'react-hook-form'
-
-// ** INFO PENTING
-// *  Component ini harus dibungkus dengan FormProvider dari react-hook-form
-// ! Masih ada kekurangan dari component ini, angka negatif belum bisa
-// ! Bugs:
-// !   - Jumlah angka di belakang koma berbeda dari view dan value
-// !     (eg: maxDigitsAfterComma = 2; view = 12,22; tapi value = 12,222)
 
 const decimalSeparator = ','
 
@@ -50,6 +45,9 @@ export default function FormattedNumberTextField(props: Props) {
     disabled
   } = props
   const inputRef = useRef<HTMLInputElement>(null)
+
+  // // ** Form Hooks
+  // const formHook = useFormContext()
 
   // ** Format Number
   const formatNumberWithDotsAndComma = (num: string) => {

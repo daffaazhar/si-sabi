@@ -7,7 +7,7 @@ import { useRouter } from 'next/navigation'
 // Material Imports
 import { Tab, ButtonProps, styled, Box } from '@mui/material'
 import { TabContext, TabPanel } from '@mui/lab'
-import MuiTabList, { TabListProps } from '@mui/lab/TabList'
+import MuiTabList from '@mui/lab/TabList'
 
 // Custom Component Imports
 import Icon from '@/@core/components/icon'
@@ -15,6 +15,7 @@ import SurveyPage from '@/views/pemohon-bantuan/SurveyPage'
 import PrinsipPage from '@/views/pemohon-bantuan/PrinsipPage'
 import SpesifikasiPage from '@/views/pemohon-bantuan/SpesifikasiPage'
 import PencairanPage from '@/views/pemohon-bantuan/PencairanPage'
+import PertanggungjawabanPage from '@/views/pemohon-bantuan/PertanggungjawabanPage'
 
 type CustomCardWithHorizontalTabsStepType = {
   title: string
@@ -103,6 +104,11 @@ export default function Page({ params }: { params: { id: string; tab: string } }
       title: 'Pencairan',
       tabTo: 'pencairan',
       page: <PencairanPage id={id} />
+    },
+    {
+      title: 'Pertanggungjawaban',
+      tabTo: 'pertanggungjawaban',
+      page: <PertanggungjawabanPage id={id} />
     }
   ]
 

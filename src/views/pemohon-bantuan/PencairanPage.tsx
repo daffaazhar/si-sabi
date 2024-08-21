@@ -15,12 +15,15 @@ import {
   CircularProgress,
   Box,
   Typography,
-  Skeleton
+  Skeleton,
+  FormControlLabel,
+  Checkbox
 } from '@mui/material'
 import { LoadingButton } from '@mui/lab'
 
 // Third-party Imports
 import toast from 'react-hot-toast'
+import dayjs from 'dayjs'
 
 // Hook Imports
 import { useMe } from '@/hooks/auth/useMe'
@@ -30,9 +33,7 @@ import { useRejectApplicant } from '@/hooks/applicant/useRejectApplicant'
 import { useSubmitApplicantToSupervisor } from '@/hooks/applicant/useSubmitApplicantToSupervisor'
 
 // Custom Component Imports
-import OpenDialogOnElementClick from '@/@core/components/dialogs/OpenDialogOnElementClick'
 import CustomInputViewMode from '@/@menu/components/CustomInputViewMode'
-import FormPencairanDialog from '@/@core/components/dialogs/form-pencairan'
 
 export default function PencairanPage({ id }: { id: string }) {
   const { data: user } = useMe()
@@ -120,12 +121,9 @@ export default function PencairanPage({ id }: { id: string }) {
               {user?.data.role === 'STAFF' &&
                 applicant?.stage === 'PENCAIRAN' &&
                 applicant?.status === 'SIAP_UNTUK_MENGISI_FORM_PENCAIRAN' && (
-                  <OpenDialogOnElementClick
-                    element={Button}
-                    elementProps={{ variant: 'contained', color: 'secondary', children: 'Isi Form Prinsip' }}
-                    dialog={FormPencairanDialog}
-                    dialogProps={{ data: applicant }}
-                  />
+                  <Button variant='contained' color='secondary' href={`/pemohon-bantuan/${id}/form-pencairan`}>
+                    Isi Form Pencairan
+                  </Button>
                 )}
               {user?.data.role === 'STAFF' &&
                 applicant?.stage === 'PENCAIRAN' &&
@@ -140,13 +138,10 @@ export default function PencairanPage({ id }: { id: string }) {
                     Ajukan ke Penyelia
                   </LoadingButton>
                 )}
-              {user?.data.role === 'PENYELIA' && ['PENCAIRAN'].includes(applicant?.stage) && (
-                <OpenDialogOnElementClick
-                  element={Button}
-                  elementProps={{ variant: 'contained', color: 'secondary', children: 'Ubah' }}
-                  dialog={FormPencairanDialog}
-                  dialogProps={{ data: applicant }}
-                />
+              {user?.data.role === 'PENYELIA' && ['PENCAIRAN', 'PERTANGGUNGJAWABAN'].includes(applicant?.stage) && (
+                <Button variant='contained' color='secondary' href={`/pemohon-bantuan/${id}/form-pencairan`}>
+                  Ubah
+                </Button>
               )}
             </Stack>
           )
@@ -158,7 +153,7 @@ export default function PencairanPage({ id }: { id: string }) {
           <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
             <CircularProgress />
           </Box>
-        ) : !['PENCAIRAN'].includes(applicant?.stage) ? (
+        ) : !['PENCAIRAN', 'PERTANGGUNGJAWABAN'].includes(applicant?.stage) ? (
           <Stack sx={{ p: 12, display: 'flex', flexDirection: 'column', alignItems: 'center', textAlign: 'center' }}>
             <Image
               width={150}
@@ -177,36 +172,161 @@ export default function PencairanPage({ id }: { id: string }) {
             </Box>
           </Stack>
         ) : (
-          <Grid container spacing={4}>
-            <Grid item xs={12} md={6}>
-              <CustomInputViewMode label='Invoice Vendor' value={!!applicant?.vendor_invoice ? 'Ya' : 'Tidak'} />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <CustomInputViewMode
-                label='Surat Penunjukan Rekening Vendor'
-                value={!!applicant?.vendor_account_appointment_letter ? 'Ya' : 'Tidak'}
-              />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <CustomInputViewMode label='Copy Buku Tabungan' value={!!applicant?.saving_book ? 'Ya' : 'Tidak'} />
-            </Grid>
-            <Grid item xs={12} md={6}>
-              <CustomInputViewMode label='BAST' value={!!applicant?.bast ? 'Ya' : 'Tidak'} />
-            </Grid>
-            {applicant.nominal > 25000000 && (
-              <Grid item xs={12} md={6}>
-                <CustomInputViewMode label='Surat Pernyataan' value={!!applicant?.statement_letter ? 'Ya' : 'Tidak'} />
+          <>
+            <Grid container spacing={4}>
+              <Grid item xs={12}>
+                <Typography fontWeight={600} fontSize={16}>
+                  Memorandum
+                </Typography>
               </Grid>
-            )}
-            {applicant.nominal > 50000000 && (
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12} md={4}>
+                <CustomInputViewMode label='Nomor' value={applicant?.liquefaction_memo_number} />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <CustomInputViewMode label='Perihal' value={applicant?.liquefaction_memo_regard} />
+              </Grid>
+              <Grid item xs={12} md={4}>
                 <CustomInputViewMode
-                  label='Laporan Penggunaan Bantuan PSBI'
-                  value={!!applicant?.usage_report ? 'Ya' : 'Tidak'}
+                  label='Tanggal'
+                  value={
+                    !!applicant?.liquefaction_memo_date
+                      ? dayjs(applicant?.liquefaction_memo_date).format('D MMM YYYY')
+                      : undefined
+                  }
                 />
               </Grid>
-            )}
-          </Grid>
+            </Grid>
+
+            <Divider sx={{ marginY: 5 }} />
+
+            <Grid container spacing={4}>
+              <Grid item xs={12}>
+                <Typography fontWeight={600} fontSize={16}>
+                  Penanggungjawab
+                </Typography>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <CustomInputViewMode label='Ditulis Oleh' value={applicant?.liquefaction_writed_by} />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <CustomInputViewMode label='Dipersiapkan Oleh' value={applicant?.liquefaction_prepared_by} />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <CustomInputViewMode label='Diperiksa Oleh' value={applicant?.liquefaction_checked_by} />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <CustomInputViewMode label='Didukung Oleh' value={applicant?.liquefaction_supported_by} />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <CustomInputViewMode label='Disetujui Oleh' value={applicant?.liquefaction_approved_by} />
+              </Grid>
+            </Grid>
+
+            <Divider sx={{ marginY: 5 }} />
+
+            <Grid container spacing={4}>
+              <Grid item xs={12}>
+                <Typography fontWeight={600} fontSize={16}>
+                  LD BI ERP
+                </Typography>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <CustomInputViewMode label='Nomor' value={applicant?.ld_bi_erp_number} />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <CustomInputViewMode label='Perihal' value={applicant?.ld_bi_erp_regard} />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <CustomInputViewMode
+                  label='Tanggal'
+                  value={
+                    !!applicant?.ld_bi_erp_date ? dayjs(applicant?.ld_bi_erp_date).format('D MMM YYYY') : undefined
+                  }
+                />
+              </Grid>
+            </Grid>
+
+            <Divider sx={{ marginY: 5 }} />
+
+            <Grid container spacing={4}>
+              <Grid item xs={12}>
+                <Typography fontWeight={600} fontSize={16}>
+                  Rekap Bantuan PSBI
+                </Typography>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <CustomInputViewMode label='Nomor' value={applicant?.fund_recap_number} />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <CustomInputViewMode label='Perihal' value={applicant?.fund_recap_regard} />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <CustomInputViewMode
+                  label='Tanggal'
+                  value={
+                    !!applicant?.fund_recap_date ? dayjs(applicant?.fund_recap_date).format('D MMM YYYY') : undefined
+                  }
+                />
+              </Grid>
+            </Grid>
+
+            <Divider sx={{ marginY: 5 }} />
+
+            <Grid container spacing={4}>
+              <Grid item xs={12}>
+                <Typography fontWeight={600} fontSize={16}>
+                  Kelengkapan Berkas Pembayaran
+                </Typography>
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <FormControlLabel
+                  label='Invoice'
+                  labelPlacement='end'
+                  control={<Checkbox value={applicant?.invoice} checked={applicant?.invoice} />}
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <FormControlLabel
+                  label='Surat Pernyataan Non-PKP/Faktur Pajak'
+                  labelPlacement='end'
+                  control={<Checkbox value={applicant?.non_pkp_tax_invoice} checked={applicant?.non_pkp_tax_invoice} />}
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <FormControlLabel
+                  label='Surat Penunjukan Rekening'
+                  labelPlacement='end'
+                  control={
+                    <Checkbox
+                      value={applicant?.account_appointment_letter}
+                      checked={applicant?.account_appointment_letter}
+                    />
+                  }
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <FormControlLabel
+                  label='Foto Buku Tabungan'
+                  labelPlacement='end'
+                  control={<Checkbox value={applicant?.saving_book} checked={applicant?.saving_book} />}
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <FormControlLabel
+                  label='NPWP Penunjukan Rekening'
+                  labelPlacement='end'
+                  control={<Checkbox value={applicant?.npwp} checked={applicant?.npwp} />}
+                />
+              </Grid>
+              <Grid item xs={12} md={4}>
+                <FormControlLabel
+                  label='KTP'
+                  labelPlacement='end'
+                  control={<Checkbox value={applicant?.ktp} checked={applicant?.ktp} />}
+                />
+              </Grid>
+            </Grid>
+          </>
         )}
       </CardContent>
     </Card>
