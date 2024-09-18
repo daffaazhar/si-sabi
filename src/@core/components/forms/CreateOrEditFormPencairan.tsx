@@ -390,7 +390,7 @@ export default function CreateOrEditFormPencairan({ isLoading }: { isLoading: bo
               name='npwp'
               render={({ field }) => (
                 <FormControlLabel
-                  label='NPWP Penunjukan Rekening'
+                  label='NPWP'
                   labelPlacement='end'
                   control={<Checkbox checked={field.value} onChange={e => field.onChange(e.target.checked)} />}
                 />

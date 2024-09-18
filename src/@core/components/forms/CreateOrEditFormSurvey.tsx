@@ -25,6 +25,8 @@ import {
   ApplicantInstitutionTypeEnum,
   ApplicantOwnershipStatusEnum,
   ApplicantPsbiScopeEnum,
+  ApplicantRequestedFundEnum,
+  ApplicantRequiredFundHasBeenObtainedFromEnum,
   ApplicantSourceOfFundEnum
 } from '@/types/applicantTypes'
 
@@ -33,6 +35,8 @@ import {
   applicantInstitutionType,
   applicantOwnershipStatusOptions,
   applicantPsbiScopeOptions,
+  applicantRequestedFundOptions,
+  applicantRequiredFundHasBeenObtainedFromOptions,
   applicantSourceOfFundOptions
 } from '@/configs/applicantConfig'
 
@@ -57,10 +61,15 @@ export const defaultValuesFormSurvey = {
   number_of_committee: 0,
   source_of_fund: 'IURAN',
   other_source_of_fund: '',
+  requested_fund: ApplicantRequestedFundEnum.SARANA_PRASARANA,
+  requested_fund_priority: '',
   activity_goals: '',
   number_of_beneficiaries: 0,
   required_funds: 0,
-  psbi_scope: []
+  required_funds_has_been_obtained_from: [],
+  psbi_scope: [],
+  is_approved_by_surveyor: false,
+  surveyor_name: ''
 } as ApplicantFormSurveyDataType
 
 export const formSchemaSurvey = z
@@ -91,9 +100,14 @@ export const formSchemaSurvey = z
     number_of_committee: z.coerce.number().min(0, { message: 'Jumlah panitia tidak valid' }),
     source_of_fund: z.nativeEnum(ApplicantSourceOfFundEnum),
     other_source_of_fund: z.string().optional(),
+    requested_fund: z.nativeEnum(ApplicantRequestedFundEnum),
+    requested_fund_priority: z.string().optional(),
     activity_goals: z.string().min(1, { message: 'Tujuan kegiatan harus diisi' }),
     number_of_beneficiaries: z.coerce.number().min(0, { message: 'Jumlah penerima manfaat tidak valid' }),
-    required_funds: z.coerce.number().min(0, { message: 'Jumlah dana yang diperlukan tidak valid' })
+    required_funds: z.coerce.number().min(0, { message: 'Jumlah dana yang diperlukan tidak valid' }),
+    required_funds_has_been_obtained_from: z.array(z.nativeEnum(ApplicantRequiredFundHasBeenObtainedFromEnum)),
+    is_approved_by_surveyor: z.boolean(),
+    surveyor_name: z.string().min(1, { message: 'Nama surveyor harus diisi' })
   })
   .refine(
     data => {
@@ -600,6 +614,41 @@ export default function CreateOrEditFormSurvey() {
       </Typography>
       <Grid container spacing={4}>
         <Grid item sm={12}>
+          <div>
+            <FormLabel sx={{ color: 'var(--mui-palette-text-primary)', fontSize: 13 }}>
+              Permohonan Bantuan yang Diajukan
+            </FormLabel>
+            <Controller
+              name='requested_fund'
+              control={formHook.control}
+              render={({ field }) => (
+                <RadioGroup {...field}>
+                  <Grid container columnSpacing={6}>
+                    {applicantRequestedFundOptions.map(item => (
+                      <Grid key={item.value} item xs={12} md={3}>
+                        <FormControlLabel key={item.value} value={item.value} control={<Radio />} label={item.label} />
+                      </Grid>
+                    ))}
+                  </Grid>
+                </RadioGroup>
+              )}
+            />
+          </div>
+        </Grid>
+        <Grid item sm={12}>
+          <CustomTextField
+            fullWidth
+            multiline
+            minRows={2}
+            label='Dengan Prioritas...'
+            autoComplete='off'
+            placeholder='Masukkan prioritas'
+            {...formHook.register('requested_fund_priority')}
+            error={!!formHook.formState.errors.requested_fund_priority}
+            helperText={formHook.formState.errors.requested_fund_priority?.message}
+          />
+        </Grid>
+        <Grid item sm={12}>
           <CustomTextField
             fullWidth
             multiline
@@ -630,6 +679,92 @@ export default function CreateOrEditFormSurvey() {
             textFieldProps={{
               label: 'Dana yang Dibutuhkan'
             }}
+          />
+        </Grid>
+        <Grid item sm={12}>
+          <div>
+            <FormLabel sx={{ color: 'var(--mui-palette-text-primary)', fontSize: 13 }}>
+              Sumber Dana untuk Kegiatan Tersebut Telah Diperoleh dari
+            </FormLabel>
+            <FormGroup>
+              <Grid container columnSpacing={6}>
+                {applicantRequiredFundHasBeenObtainedFromOptions.map(item => (
+                  <Grid key={item.value} item xs={12} md={4}>
+                    <Controller
+                      name='required_funds_has_been_obtained_from'
+                      control={formHook.control}
+                      render={({ field }) => (
+                        <FormControlLabel
+                          control={
+                            <Checkbox
+                              value={item.value}
+                              checked={field.value.includes(item.value)}
+                              onChange={e => {
+                                const checked = e.target.checked
+                                field.onChange(
+                                  checked ? [...field.value, item.value] : field.value.filter(v => v !== item.value)
+                                )
+                              }}
+                            />
+                          }
+                          label={item.label}
+                        />
+                      )}
+                    />
+                  </Grid>
+                ))}
+              </Grid>
+            </FormGroup>
+            <Typography
+              sx={{
+                lineHeight: 1.154,
+                color: 'var(--mui-palette-error-main)',
+                fontSize: '13px'
+              }}
+            >
+              {formHook.formState.errors.required_funds_has_been_obtained_from?.message}
+            </Typography>
+          </div>
+        </Grid>
+      </Grid>
+
+      <Divider sx={{ marginY: 5 }} />
+
+      <Typography fontWeight={600} fontSize={16} marginBottom={3}>
+        Kesimpulan Hasil Identifikasi
+      </Typography>
+      <Grid container spacing={4}>
+        <Grid item sm={12}>
+          <FormLabel sx={{ color: 'var(--mui-palette-text-primary)', fontSize: 13 }}>
+            Kesesuaian Hasil Identifikasi dengan Proposal
+          </FormLabel>
+          <Controller
+            name='is_approved_by_surveyor'
+            control={formHook.control}
+            render={({ field }) => (
+              <RadioGroup {...field}>
+                <Grid container columnSpacing={6}>
+                  <Grid item xs={12} md={3}>
+                    <FormControlLabel value={false} control={<Radio />} label={'Tidak Sesuai'} />
+                  </Grid>
+                  <Grid item xs={12} md={3}>
+                    <FormControlLabel value={true} control={<Radio />} label={'Sesuai'} />
+                  </Grid>
+                </Grid>
+              </RadioGroup>
+            )}
+          />
+        </Grid>
+        <Grid item sm={12}>
+          <CustomTextField
+            fullWidth
+            multiline
+            label='Nama Surveyor'
+            autoComplete='off'
+            placeholder='Masukkan nama surveyor'
+            {...formHook.register('surveyor_name')}
+            error={!!formHook.formState.errors.surveyor_name}
+            helperText={formHook.formState.errors.surveyor_name?.message}
           />
         </Grid>
       </Grid>

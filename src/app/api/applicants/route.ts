@@ -29,8 +29,19 @@ export const POST = async (req: Request) => {
   try {
     const body = await req.json()
     await connect()
+
+    const generateRandomLetters = (length: number) => {
+      const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+      let result = ''
+      for (let i = 0; i < length; i++) {
+        result += letters.charAt(Math.floor(Math.random() * letters.length))
+      }
+      return result
+    }
+
     const applicant = new Applicant({
       ...body,
+      code: `PSBI2024-${generateRandomLetters(6)}`,
       invoice: false,
       non_pkp_tax_invoice: false,
       account_appointment_letter: false,

@@ -44,12 +44,10 @@ import { useDeleteApplicant } from '@/hooks/applicant/useDeleteApplicant'
 
 // Custom Component Imports
 import Icon from '@core/components/icon'
-import TableHeader from '@core/components/datagrid/TableHeader'
 import CustomTextField from '@core/components/mui/TextField'
 import TablePaginationComponent from '@/components/TablePaginationComponent'
 import OpenDialogOnElementClick from '@/@core/components/dialogs/OpenDialogOnElementClick'
 import DeleteConfirmation from '@/@core/components/dialogs/DeleteConfirmation'
-import PemohonBantuanDialog from '@/@core/components/dialogs/pemohon-bantuan'
 
 // Other Imports
 import styles from '@core/styles/table.module.css'
@@ -131,7 +129,7 @@ export default function Page() {
 
   const columns = useMemo<ColumnDef<any, any>[]>(
     () => [
-      columnHelper.accessor('_id', {
+      columnHelper.accessor('code', {
         cell: info => info.getValue(),
         header: 'Kode SI-SABI'
       }),

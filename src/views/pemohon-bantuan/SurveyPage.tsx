@@ -42,6 +42,8 @@ import {
   applicantInstitutionType,
   applicantOwnershipStatusOptions,
   applicantPsbiScopeOptions,
+  applicantRequestedFundOptions,
+  applicantRequiredFundHasBeenObtainedFromOptions,
   applicantSourceOfFundOptions,
   applicantStatusOptions
 } from '@/configs/applicantConfig'
@@ -126,7 +128,7 @@ export default function SurveyPage({ id }: { id: string }) {
           <>
             <Grid container spacing={4}>
               <Grid item xs={12} md={6}>
-                <CustomInputViewMode label='Kode SI-SABI' value={applicant?._id} />
+                <CustomInputViewMode label='Kode SI-SABI' value={applicant?.code} />
               </Grid>
               <Grid item xs={12} md={6}>
                 <CustomInputViewMode
@@ -352,20 +354,51 @@ export default function SurveyPage({ id }: { id: string }) {
                   Kegiatan
                 </Typography>
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12}>
+                <CustomInputViewMode
+                  label='Permohonan Bantuan yang Diajukan'
+                  value={applicantRequestedFundOptions.find(item => item.value === applicant?.requested_fund)?.label}
+                />
+              </Grid>
+              <Grid item xs={12}>
+                <CustomInputViewMode label='Dengan Prioritas' value={applicant?.requested_fund_priority} />
+              </Grid>
+              <Grid item xs={12}>
+                <CustomInputViewMode label='Tujuan/Manfaat Kegiatan' value={applicant?.activity_goals} />
+              </Grid>
+              <Grid item xs={12}>
                 <CustomInputViewMode
                   label='Jumlah Penerima Manfaat'
                   value={`${applicant?.number_of_beneficiaries.toString()} Orang`}
                 />
               </Grid>
-              <Grid item xs={12} md={6}>
+              <Grid item xs={12}>
                 <CustomInputViewMode
                   label='Dana yang Dibutuhkan'
                   value={`Rp ${applicant?.required_funds.toString()}`}
                 />
               </Grid>
               <Grid item xs={12}>
-                <CustomInputViewMode label='Tujuan/Manfaat Kegiatan' value={applicant?.activity_goals} />
+                <div>
+                  <FormLabel sx={{ fontSize: 13 }}>Sumber Dana untuk Kegiatan Tersebut Telah Diperoleh Dari</FormLabel>
+                  <FormGroup>
+                    <Grid container columnSpacing={6}>
+                      {applicantRequiredFundHasBeenObtainedFromOptions.map(item => (
+                        <Grid key={item.value} item xs={12} md={4}>
+                          <FormControlLabel
+                            control={
+                              <Checkbox
+                                value={item.value}
+                                checked={applicant?.required_funds_has_been_obtained_from.includes(item.value)}
+                              />
+                            }
+                            label={<Typography>{item.label}</Typography>}
+                          />
+                        </Grid>
+                      ))}
+                    </Grid>
+                  </FormGroup>
+                </div>
               </Grid>
             </Grid>
           </>

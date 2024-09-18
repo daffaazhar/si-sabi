@@ -33,7 +33,6 @@ import { useSubmitApplicantToSupervisor } from '@/hooks/applicant/useSubmitAppli
 // Custom Component Imports
 import OpenDialogOnElementClick from '@/@core/components/dialogs/OpenDialogOnElementClick'
 import CustomInputViewMode from '@/@menu/components/CustomInputViewMode'
-import FormPrinsipDialog from '@/@core/components/dialogs/form-prinsip'
 import React from 'react'
 
 export default function PrinsipPage({ id }: { id: string }) {
@@ -249,14 +248,19 @@ export default function PrinsipPage({ id }: { id: string }) {
                 </React.Fragment>
               ))}
               {applicant?.proposed_fund_construction.map((item: any, index: number) => (
-                <Grid item xs={12} md={12} key={`construction-${index}`}>
-                  <CustomInputViewMode label={`Nama Jasa ${index + 1}`} value={item.service_name} />
-                </Grid>
+                <React.Fragment key={`item-${index}`}>
+                  <Grid item xs={12} md={6} key={`construction-${index}`}>
+                    <CustomInputViewMode label={`Nama Jasa ${index + 1}`} value={item.service_name} />
+                  </Grid>
+                  <Grid item xs={12} md={6} key={`construction-${index}`}>
+                    <CustomInputViewMode label={`Volume ${index + 1}`} value={item.volume.toString()} />
+                  </Grid>
+                </React.Fragment>
               ))}
               <Grid item xs={12} md={6}>
                 <CustomInputViewMode
                   label='Usulan Besaran'
-                  value={'Rp ' + applicant?.proposed_fund_nominal.toString()}
+                  value={'Rp ' + applicant?.proposed_fund_nominal?.toString() ?? undefined}
                 />
               </Grid>
             </Grid>

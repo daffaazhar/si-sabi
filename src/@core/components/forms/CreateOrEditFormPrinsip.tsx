@@ -71,7 +71,8 @@ export const formSchemaPrinsip = z.object({
   proposed_fund_construction: z
     .array(
       z.object({
-        service_name: z.string().optional()
+        service_name: z.string().optional(),
+        volume: z.coerce.number().min(1).optional()
       })
     )
     .optional(),
@@ -354,7 +355,7 @@ export default function CreateOrEditFormPrinsip({ isLoading }: { isLoading: bool
               <Grid container spacing={4}>
                 {fundConstructionFields.map((field, index) => (
                   <React.Fragment key={field.id}>
-                    <Grid item sm={11}>
+                    <Grid item sm={6}>
                       <Controller
                         name={`proposed_fund_construction.${index}.service_name`}
                         control={formHook.control}
@@ -363,6 +364,22 @@ export default function CreateOrEditFormPrinsip({ isLoading }: { isLoading: bool
                             fullWidth
                             label={`Nama Jasa ${index + 1}`}
                             placeholder={`Masukkan nama jasa ${index + 1}`}
+                            {...field}
+                            error={!!fieldState.error}
+                            helperText={fieldState.error?.message}
+                          />
+                        )}
+                      />
+                    </Grid>
+                    <Grid item sm={5}>
+                      <Controller
+                        name={`proposed_fund_construction.${index}.volume`}
+                        control={formHook.control}
+                        render={({ field, fieldState }) => (
+                          <CustomTextField
+                            fullWidth
+                            label={`Volume ${index + 1}`}
+                            placeholder={`Masukkan volume ${index + 1}`}
                             {...field}
                             error={!!fieldState.error}
                             helperText={fieldState.error?.message}

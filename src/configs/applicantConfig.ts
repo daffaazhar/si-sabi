@@ -2,6 +2,8 @@ import {
   ApplicantInstitutionTypeEnum,
   ApplicantOwnershipStatusEnum,
   ApplicantPsbiScopeEnum,
+  ApplicantRequestedFundEnum,
+  ApplicantRequiredFundHasBeenObtainedFromEnum,
   ApplicantSourceOfFundEnum,
   ApplicantStageEnum,
   ApplicantStatusEnum,
@@ -79,6 +81,17 @@ export const applicantInstitutionType = [
     category: 'LEMBAGA'
   },
   { label: 'Lainnya', value: ApplicantInstitutionTypeEnum.LAINNYA_LEMBAGA, category: 'LEMBAGA' }
+]
+
+export const applicantRequestedFundOptions = [
+  { label: 'Sarana Prasarana', value: ApplicantRequestedFundEnum.SARANA_PRASARANA },
+  { label: 'Infrastruktur Bangunan', value: ApplicantRequestedFundEnum.INFRASTRUKTUR_BANGUNAN },
+  { label: 'Lainnya', value: ApplicantRequestedFundEnum.LAINNYA }
+]
+
+export const applicantRequiredFundHasBeenObtainedFromOptions = [
+  { label: 'Dana Lembaga', value: ApplicantRequiredFundHasBeenObtainedFromEnum.DANA_LEMBAGA },
+  { label: 'Sumbangan dari Instansi', value: ApplicantRequiredFundHasBeenObtainedFromEnum.SUMBANGAN_DARI_INSTANSI }
 ]
 
 export const psbiClassificationOptions = [

@@ -33,10 +33,21 @@ export enum ApplicantPsbiScopeEnum {
   PARTISIPASI_EDUKASI_PUBLIK = 'PARTISIPASI_EDUKASI_PUBLIK'
 }
 
+export enum ApplicantRequestedFundEnum {
+  SARANA_PRASARANA = 'SARANA_PRASARANA',
+  INFRASTRUKTUR_BANGUNAN = 'INFRASTRUKTUR_BANGUNAN',
+  LAINNYA = 'LAINNYA'
+}
+
 export enum ApplicantSourceOfFundEnum {
   IURAN = 'IURAN',
   SUMBANGAN = 'SUMBANGAN',
   LAINNYA = 'LAINNYA'
+}
+
+export enum ApplicantRequiredFundHasBeenObtainedFromEnum {
+  DANA_LEMBAGA = 'DANA_LEMBAGA',
+  SUMBANGAN_DARI_INSTANSI = 'SUMBANGAN_DARI_INSTANSI'
 }
 
 export enum ApplicantInstitutionTypeEnum {
@@ -73,6 +84,7 @@ export enum PsbiProposedFundEnum {
 
 export type ApplicantType = {
   id?: string
+  code?: string
 
   // Survey
   name?: string | null
@@ -95,9 +107,14 @@ export type ApplicantType = {
   number_of_members?: number | null
   number_of_committee?: number | null
   source_of_fund?: string | null
+  requested_fund?: `${ApplicantRequestedFundEnum}` | null
+  requested_fund_priority?: string | null
   activity_goals?: string | null
   number_of_beneficiaries?: number | null
   required_funds?: number | null
+  required_funds_has_been_obtained_from?: `${ApplicantRequiredFundHasBeenObtainedFromEnum}`[]
+  is_approved_by_surveyor?: boolean
+  surveyor_name?: string | null
 
   // Principle
   principle_memo_number?: string | null
@@ -119,6 +136,7 @@ export type ApplicantType = {
   proposed_fund_construction?:
     | {
         service_name: string
+        volume: string
       }[]
     | null
   proposed_fund_nominal?: number
@@ -207,9 +225,14 @@ export type ApplicantFormSurveyDataType = {
   number_of_committee: number
   source_of_fund: string
   other_source_of_fund: string
+  requested_fund: `${ApplicantRequestedFundEnum}`
+  requested_fund_priority: string
   activity_goals: string
   number_of_beneficiaries: number
   required_funds: number
+  required_funds_has_been_obtained_from: `${ApplicantRequiredFundHasBeenObtainedFromEnum}`[]
+  is_approved_by_surveyor: boolean
+  surveyor_name: string
 }
 
 export type ApplicantFormPrinsipDataType = {
@@ -230,6 +253,7 @@ export type ApplicantFormPrinsipDataType = {
 
   proposed_fund_construction: {
     service_name: string
+    volume: number
   }[]
   proposed_fund_nominal: number
 }

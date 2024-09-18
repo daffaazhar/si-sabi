@@ -2,6 +2,10 @@ import { Schema, model, models } from 'mongoose'
 
 const ApplicantSchema = new Schema(
   {
+    code: {
+      type: String,
+      required: true
+    },
     // Survey
     name: {
       type: String,
@@ -87,6 +91,15 @@ const ApplicantSchema = new Schema(
       required: true
     },
     other_source_of_fund: String,
+    requested_fund: {
+      type: String,
+      enum: ['SARANA_PRASARANA', 'INFRASTRUKTUR_BANGUNAN', 'LAINNYA'],
+      required: true
+    },
+    requested_fund_priority: {
+      type: String,
+      required: true
+    },
     activity_goals: {
       type: String,
       required: true
@@ -97,6 +110,19 @@ const ApplicantSchema = new Schema(
     },
     required_funds: {
       type: Number,
+      required: true
+    },
+    required_funds_has_been_obtained_from: {
+      type: [String],
+      enum: ['DANA_LEMBAGA', 'SUMBANGAN_DARI_INSTANSI'],
+      required: true
+    },
+    is_approved_by_surveyor: {
+      type: Boolean,
+      required: true
+    },
+    surveyor_name: {
+      type: String,
       required: true
     },
 
@@ -128,7 +154,8 @@ const ApplicantSchema = new Schema(
     proposed_fund_construction: {
       type: [
         {
-          service_name: String
+          service_name: String,
+          volume: Number
         }
       ]
     },

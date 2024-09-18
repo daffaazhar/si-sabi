@@ -280,7 +280,7 @@ export default function PencairanPage({ id }: { id: string }) {
               </Grid>
               <Grid item xs={12} md={4}>
                 <FormControlLabel
-                  label='Invoice'
+                  label='Invoice (2 Rangkap)'
                   labelPlacement='end'
                   control={<Checkbox value={applicant?.invoice} checked={applicant?.invoice} />}
                 />
@@ -306,14 +306,14 @@ export default function PencairanPage({ id }: { id: string }) {
               </Grid>
               <Grid item xs={12} md={4}>
                 <FormControlLabel
-                  label='Foto Buku Tabungan'
+                  label='Foto Buku Tabungan/Rekening Koran'
                   labelPlacement='end'
                   control={<Checkbox value={applicant?.saving_book} checked={applicant?.saving_book} />}
                 />
               </Grid>
               <Grid item xs={12} md={4}>
                 <FormControlLabel
-                  label='NPWP Penunjukan Rekening'
+                  label='NPWP'
                   labelPlacement='end'
                   control={<Checkbox value={applicant?.npwp} checked={applicant?.npwp} />}
                 />

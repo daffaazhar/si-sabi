@@ -44,7 +44,7 @@ export default function Page() {
       success: 'Data pemohon berhasil disimpan!',
       error: 'Terjadi kesalahan'
     })
-    formHook.reset()
+    // formHook.reset()
 
     mutationPromise.then(() => {
       setTimeout(() => {

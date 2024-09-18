@@ -30,9 +30,7 @@ import { useRejectApplicant } from '@/hooks/applicant/useRejectApplicant'
 import { useSubmitApplicantToSupervisor } from '@/hooks/applicant/useSubmitApplicantToSupervisor'
 
 // Custom Component Imports
-import OpenDialogOnElementClick from '@/@core/components/dialogs/OpenDialogOnElementClick'
 import CustomInputViewMode from '@/@menu/components/CustomInputViewMode'
-import FormSpesifikasiDialog from '@/@core/components/dialogs/form-spesifikasi'
 import dayjs from 'dayjs'
 import React from 'react'
 
@@ -311,7 +309,10 @@ export default function SpesifikasiPage({ id }: { id: string }) {
                 </Typography>
               </Grid>
               <Grid item xs={12}>
-                <CustomInputViewMode label='Besaran Bantuan' value={'Rp ' + applicant?.fund_nominal.toString()} />
+                <CustomInputViewMode
+                  label='Besaran Bantuan'
+                  value={'Rp ' + applicant?.fund_nominal?.toString() ?? undefined}
+                />
               </Grid>
             </Grid>
           </>
