@@ -200,6 +200,7 @@ const ApplicantSchema = new Schema(
     saving_book: Boolean,
     npwp: Boolean,
     ktp: Boolean,
+    is_distributed: Boolean,
 
     // Accountability
     bast: Boolean,

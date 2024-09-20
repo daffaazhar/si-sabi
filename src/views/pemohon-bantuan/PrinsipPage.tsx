@@ -260,7 +260,11 @@ export default function PrinsipPage({ id }: { id: string }) {
               <Grid item xs={12} md={6}>
                 <CustomInputViewMode
                   label='Usulan Besaran'
-                  value={'Rp ' + applicant?.proposed_fund_nominal?.toString() ?? undefined}
+                  value={
+                    !!applicant?.proposed_fund_nominal
+                      ? `Rp ${applicant?.proposed_fund_nominal?.toString()}`
+                      : undefined
+                  }
                 />
               </Grid>
             </Grid>

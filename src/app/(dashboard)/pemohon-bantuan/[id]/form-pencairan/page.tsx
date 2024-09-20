@@ -52,7 +52,8 @@ export default function Page({ params }: { params: { id: string } }) {
         account_appointment_letter: applicant.account_appointment_letter,
         saving_book: applicant.saving_book,
         npwp: applicant.npwp,
-        ktp: applicant.ktp
+        ktp: applicant.ktp,
+        is_distributed: !!applicant.is_distributed
       })
     }
   }, [applicant, isFetching, isPending, formHook])

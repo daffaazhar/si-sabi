@@ -194,6 +194,7 @@ export type ApplicantType = {
   saving_book?: boolean
   npwp?: boolean
   ktp?: boolean
+  is_distributed?: boolean
 
   // Accountability
   bast?: boolean
@@ -308,6 +309,7 @@ export type ApplicantFormPencairanDataType = {
   saving_book: boolean
   npwp: boolean
   ktp: boolean
+  is_distributed: boolean
 }
 
 export type ApplicantFormPertanggungjawabanDataType = {

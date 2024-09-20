@@ -326,6 +326,22 @@ export default function PencairanPage({ id }: { id: string }) {
                 />
               </Grid>
             </Grid>
+
+            <Divider sx={{ marginY: 5 }} />
+
+            <Grid container spacing={4}>
+              <Grid item xs={12}>
+                <Typography fontWeight={600} fontSize={16}>
+                  Kelengkapan Lainnya
+                </Typography>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <CustomInputViewMode
+                  label='Apakah Bantuan telah Disalurkan?'
+                  value={applicant?.is_distributed ? 'Sudah' : 'Belum'}
+                />
+              </Grid>
+            </Grid>
           </>
         )}
       </CardContent>

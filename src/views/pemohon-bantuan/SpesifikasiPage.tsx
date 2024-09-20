@@ -278,7 +278,10 @@ export default function SpesifikasiPage({ id }: { id: string }) {
                       />
                     </Grid>
                     <Grid item xs={12} md={4}>
-                      <CustomInputViewMode label='Nominal Disetujui' value={'Rp ' + item?.approved_amount.toString()} />
+                      <CustomInputViewMode
+                        label='Nominal Disetujui'
+                        value={!!item?.approved_amount ? `Rp ${item?.approved_amount.toString()}` : undefined}
+                      />
                     </Grid>
                     <Grid item xs={12} md={4}>
                       <CustomInputViewMode label='Alamat' value={item?.address} />
@@ -311,7 +314,7 @@ export default function SpesifikasiPage({ id }: { id: string }) {
               <Grid item xs={12}>
                 <CustomInputViewMode
                   label='Besaran Bantuan'
-                  value={'Rp ' + applicant?.fund_nominal?.toString() ?? undefined}
+                  value={!!applicant?.fund_nominal ? `Rp ${applicant?.fund_nominal?.toString()}` : undefined}
                 />
               </Grid>
             </Grid>

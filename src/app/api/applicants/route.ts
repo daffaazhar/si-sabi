@@ -51,6 +51,7 @@ export const POST = async (req: Request) => {
       bast: false,
       statement_letter: false,
       usage_report: false,
+      is_distributed: false,
       stage: 'SURVEY',
       status: 'DRAFT'
     })

@@ -366,13 +366,13 @@ export default function SurveyPage({ id }: { id: string }) {
               <Grid item xs={12} md={4}>
                 <CustomInputViewMode
                   label='Jumlah Anggota pada Lembaga'
-                  value={applicant?.number_of_members.toString()}
+                  value={!!applicant?.number_of_members ? applicant?.number_of_members.toString() : undefined}
                 />
               </Grid>
               <Grid item xs={12} md={4}>
                 <CustomInputViewMode
                   label='Jumlah Pengurus/Panitia pada Lembaga'
-                  value={applicant?.number_of_committee.toString()}
+                  value={!!applicant?.number_of_committee ? applicant?.number_of_committee.toString() : undefined}
                 />
               </Grid>
               <Grid item xs={12} md={4}>
@@ -412,13 +412,17 @@ export default function SurveyPage({ id }: { id: string }) {
               <Grid item xs={12}>
                 <CustomInputViewMode
                   label='Jumlah Penerima Manfaat'
-                  value={`${applicant?.number_of_beneficiaries.toString()} Orang`}
+                  value={
+                    !!applicant?.number_of_beneficiaries
+                      ? `${applicant?.number_of_beneficiaries.toString()} Orang`
+                      : undefined
+                  }
                 />
               </Grid>
               <Grid item xs={12}>
                 <CustomInputViewMode
                   label='Dana yang Dibutuhkan'
-                  value={`Rp ${applicant?.required_funds.toString()}`}
+                  value={!!applicant?.required_funds ? `Rp ${applicant?.required_funds.toString()}` : undefined}
                 />
               </Grid>
               <Grid item xs={12}>

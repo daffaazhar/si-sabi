@@ -2,7 +2,18 @@
 import React from 'react'
 
 // MUI Imports
-import { Box, Checkbox, CircularProgress, Divider, FormControlLabel, Grid, Typography } from '@mui/material'
+import {
+  Box,
+  Checkbox,
+  CircularProgress,
+  Divider,
+  FormControlLabel,
+  FormLabel,
+  Grid,
+  Radio,
+  RadioGroup,
+  Typography
+} from '@mui/material'
 
 // Third Party Imports
 import * as z from 'zod'
@@ -35,7 +46,8 @@ export const defaultValuesFormPencairan = {
   account_appointment_letter: false,
   saving_book: false,
   npwp: false,
-  ktp: false
+  ktp: false,
+  is_distributed: false
 } as ApplicantFormPencairanDataType
 
 export const formSchemaPencairan = z.object({
@@ -58,12 +70,16 @@ export const formSchemaPencairan = z.object({
   account_appointment_letter: z.boolean().optional(),
   saving_book: z.boolean().optional(),
   npwp: z.boolean().optional(),
-  ktp: z.boolean().optional()
+  ktp: z.boolean().optional(),
+  is_distributed: z.boolean().optional()
 })
 
 export default function CreateOrEditFormPencairan({ isLoading }: { isLoading: boolean }) {
   // ** Hooks
   const formHook = useFormContext<ApplicantFormPencairanDataType>()
+  const distributedWatcher = formHook.watch('is_distributed')
+
+  console.log(distributedWatcher)
 
   if (isLoading) {
     return (
@@ -409,6 +425,39 @@ export default function CreateOrEditFormPencairan({ isLoading }: { isLoading: bo
                 />
               )}
             />
+          </Grid>
+        </Grid>
+
+        <Divider sx={{ marginY: 5 }} />
+
+        <Grid container spacing={4}>
+          <Grid item xs={12}>
+            <Typography fontWeight={600} fontSize={16}>
+              Kelengkapan Lain
+            </Typography>
+          </Grid>
+          <Grid item xs={12}>
+            <div>
+              <FormLabel sx={{ color: 'var(--mui-palette-text-primary)', fontSize: 13 }}>
+                Apakah Bantuan telah Disalurkan?
+              </FormLabel>
+              <Controller
+                name='is_distributed'
+                control={formHook.control}
+                render={({ field }) => (
+                  <RadioGroup {...field} onChange={e => field.onChange(e.target.value === 'true')}>
+                    <Grid container columnSpacing={6}>
+                      <Grid item xs={12} md={3}>
+                        <FormControlLabel value={false} control={<Radio />} label={'Belum'} />
+                      </Grid>
+                      <Grid item xs={12} md={3}>
+                        <FormControlLabel value={true} control={<Radio />} label={'Sudah'} />
+                      </Grid>
+                    </Grid>
+                  </RadioGroup>
+                )}
+              />
+            </div>
           </Grid>
         </Grid>
       </>
