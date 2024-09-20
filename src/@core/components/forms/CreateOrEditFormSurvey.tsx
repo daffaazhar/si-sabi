@@ -1,6 +1,8 @@
 // MUI Imports
 import {
+  Box,
   Checkbox,
+  CircularProgress,
   Divider,
   FormControlLabel,
   FormGroup,
@@ -59,7 +61,7 @@ export const defaultValuesFormSurvey = {
   carried_out_activities: '',
   number_of_members: 0,
   number_of_committee: 0,
-  source_of_fund: 'IURAN',
+  source_of_fund: ApplicantSourceOfFundEnum.IURAN,
   other_source_of_fund: '',
   requested_fund: ApplicantRequestedFundEnum.SARANA_PRASARANA,
   requested_fund_priority: '',
@@ -72,94 +74,51 @@ export const defaultValuesFormSurvey = {
   surveyor_name: ''
 } as ApplicantFormSurveyDataType
 
-export const formSchemaSurvey = z
-  .object({
-    name: z.string().min(1, { message: 'Nama lembaga/pemohon harus diisi' }),
-    activity_name: z.string().min(1, { message: 'Nama kegiatan harus diisi' }),
-    province: z.string().min(1, { message: 'Provinsi harus diisi' }),
-    city: z.string().min(1, { message: 'Kota harus diisi' }),
-    subdistrict: z.string().min(1, { message: 'Kecamatan harus diisi' }),
-    village: z.string().min(1, { message: 'Desa harus diisi' }),
-    address: z.string().min(1, { message: 'Alamat harus diisi' }),
-    contact: z.string().min(1, { message: 'Kontak harus diisi' }),
-    institution_type: z
-      .array(z.nativeEnum(ApplicantInstitutionTypeEnum))
-      .min(1, { message: 'Jenis lembaga harus dipilih' }),
-    other_institution_education_type: z.string().optional(),
-    other_institution_religion_type: z.string().optional(),
-    other_institution_type: z.string().optional(),
-    psbi_scope: z.array(z.nativeEnum(ApplicantPsbiScopeEnum)).min(1, { message: 'Ruang lingkup harus dipilih' }),
-    year_founded: z.coerce
-      .number()
-      .min(1900, { message: 'Tahun berdiri tidak valid' })
-      .max(new Date().getFullYear(), { message: 'Tahun berdiri tidak valid' }),
-    ownership_status: z.nativeEnum(ApplicantOwnershipStatusEnum),
-    have_committee: z.boolean(),
-    carried_out_activities: z.string().min(1, { message: 'Kegiatan yang dilaksanakan harus diisi' }),
-    number_of_members: z.coerce.number().min(0, { message: 'Jumlah anggota tidak valid' }),
-    number_of_committee: z.coerce.number().min(0, { message: 'Jumlah panitia tidak valid' }),
-    source_of_fund: z.nativeEnum(ApplicantSourceOfFundEnum),
-    other_source_of_fund: z.string().optional(),
-    requested_fund: z.nativeEnum(ApplicantRequestedFundEnum),
-    requested_fund_priority: z.string().optional(),
-    activity_goals: z.string().min(1, { message: 'Tujuan kegiatan harus diisi' }),
-    number_of_beneficiaries: z.coerce.number().min(0, { message: 'Jumlah penerima manfaat tidak valid' }),
-    required_funds: z.coerce.number().min(0, { message: 'Jumlah dana yang diperlukan tidak valid' }),
-    required_funds_has_been_obtained_from: z.array(z.nativeEnum(ApplicantRequiredFundHasBeenObtainedFromEnum)),
-    is_approved_by_surveyor: z.boolean(),
-    surveyor_name: z.string().min(1, { message: 'Nama surveyor harus diisi' })
-  })
-  .refine(
-    data => {
-      if (data.institution_type.includes(ApplicantInstitutionTypeEnum.LAINNYA_PENDIDIKAN)) {
-        return !!data.other_institution_education_type
-      }
-      return true
-    },
-    {
-      message: 'Jenis lembaga harus diisi',
-      path: ['other_institution_education_type']
-    }
-  )
-  .refine(
-    data => {
-      if (data.institution_type.includes(ApplicantInstitutionTypeEnum.LAINNYA_KEAGAMAAN)) {
-        return !!data.other_institution_religion_type
-      }
-      return true
-    },
-    {
-      message: 'Jenis lembaga harus diisi',
-      path: ['other.other_institution_religion_type']
-    }
-  )
-  .refine(
-    data => {
-      if (data.institution_type.includes(ApplicantInstitutionTypeEnum.LAINNYA_LEMBAGA)) {
-        return !!data.other_institution_type
-      }
-      return true
-    },
-    {
-      message: 'Jenis lembaga harus diisi',
-      path: ['other.other_institution_type']
-    }
-  )
-  .refine(
-    data => {
-      if (data.source_of_fund.includes(ApplicantSourceOfFundEnum.LAINNYA)) {
-        return !!data.other_source_of_fund
-      }
-      return true
-    },
-    {
-      message: 'Sumber dana lembaga harus diisi',
-      path: ['other.other_source_of_fund']
-    }
-  )
+export const formSchemaSurvey = z.object({
+  name: z.string().min(1, { message: 'Nama lembaga/pemohon harus diisi' }),
+  activity_name: z.string().min(1, { message: 'Nama kegiatan harus diisi' }),
+  province: z.string().min(1, { message: 'Provinsi harus diisi' }),
+  city: z.string().min(1, { message: 'Kota harus diisi' }),
+  subdistrict: z.string().min(1, { message: 'Kecamatan harus diisi' }),
+  village: z.string().min(1, { message: 'Desa harus diisi' }),
+  address: z.string().min(1, { message: 'Alamat harus diisi' }),
+  contact: z.string().min(1, { message: 'Kontak harus diisi' }),
+  institution_type: z.array(z.nativeEnum(ApplicantInstitutionTypeEnum)).optional(),
+  other_institution_education_type: z.string().optional(),
+  other_institution_religion_type: z.string().optional(),
+  other_institution_type: z.string().optional(),
+  psbi_scope: z.array(z.nativeEnum(ApplicantPsbiScopeEnum)),
+  year_founded: z.coerce
+    .number()
+    .min(1900, { message: 'Tahun berdiri tidak valid' })
+    .max(new Date().getFullYear(), { message: 'Tahun berdiri tidak valid' }),
+  ownership_status: z.nativeEnum(ApplicantOwnershipStatusEnum),
+  have_committee: z.boolean(),
+  carried_out_activities: z.string().optional(),
+  number_of_members: z.coerce.number().optional(),
+  number_of_committee: z.coerce.number().optional(),
+  source_of_fund: z.nativeEnum(ApplicantSourceOfFundEnum).optional(),
+  other_source_of_fund: z.string().optional(),
+  requested_fund: z.nativeEnum(ApplicantRequestedFundEnum),
+  requested_fund_priority: z.string().optional(),
+  activity_goals: z.string().optional(),
+  number_of_beneficiaries: z.coerce.number().min(0, { message: 'Jumlah penerima manfaat tidak valid' }),
+  required_funds: z.coerce.number().min(0, { message: 'Jumlah dana yang diperlukan tidak valid' }),
+  required_funds_has_been_obtained_from: z.array(z.nativeEnum(ApplicantRequiredFundHasBeenObtainedFromEnum)).optional(),
+  is_approved_by_surveyor: z.boolean(),
+  surveyor_name: z.string().optional()
+})
 
-export default function CreateOrEditFormSurvey() {
+export default function CreateOrEditFormSurvey({ isLoading }: { isLoading: boolean }) {
   const formHook = useFormContext<ApplicantFormSurveyDataType>()
+
+  if (isLoading) {
+    return (
+      <Box sx={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+        <CircularProgress />
+      </Box>
+    )
+  }
 
   return (
     <>

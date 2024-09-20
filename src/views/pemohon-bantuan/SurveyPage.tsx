@@ -57,6 +57,7 @@ export default function SurveyPage({ id }: { id: string }) {
   } = useFetchDetailApplicant(id)
   const { mutate: approve, isPending: isApproving } = useApproveApplicant()
   const { mutate: reject, isPending: isRejecting } = useRejectApplicant()
+  const { mutate: submitToSupervisor, isPending: isSubmittingToSupervisor } = useSubmitApplicantToSupervisor()
 
   const handleApproval = () => {
     const mutationPromise = new Promise((resolve, reject) => {
@@ -86,6 +87,20 @@ export default function SurveyPage({ id }: { id: string }) {
     })
   }
 
+  const handleSubmitToSupervisor = () => {
+    const mutationPromise = new Promise((resolve, reject) => {
+      submitToSupervisor(id, {
+        onSuccess: data => resolve(data),
+        onError: error => reject(error)
+      })
+    })
+    toast.promise(mutationPromise, {
+      loading: 'Mengajukan data ke penyelia...',
+      success: 'Data pemohon berhasil diajukan ke penyelia',
+      error: 'Terjadi kesalahan'
+    })
+  }
+
   return (
     <Card>
       <CardHeader
@@ -97,24 +112,50 @@ export default function SurveyPage({ id }: { id: string }) {
               <Skeleton animation='wave' height={50} width={100} />
               <Skeleton animation='wave' height={50} width={100} />
             </Stack>
+          ) : user?.data.role === 'PENYELIA' &&
+            applicant?.stage === 'SURVEY' &&
+            applicant?.status === 'MENUNGGU_KONFIRMASI_DARI_PENYELIA' ? (
+            <Stack spacing={2} useFlexGap flexDirection='row' alignItems='center'>
+              <LoadingButton loading={isApproving} type='submit' variant='contained' onClick={handleApproval}>
+                Setujui
+              </LoadingButton>
+              <LoadingButton
+                loading={isRejecting}
+                type='submit'
+                variant='contained'
+                color='error'
+                onClick={handleReject}
+              >
+                Tolak
+              </LoadingButton>
+            </Stack>
           ) : (
-            user?.data.role === 'PENYELIA' &&
-            applicant?.status === 'MENUNGGU_KONFIRMASI_DARI_PENYELIA' && (
-              <Stack spacing={2} useFlexGap flexDirection='row' alignItems='center'>
-                <LoadingButton loading={isApproving} type='submit' variant='contained' onClick={handleApproval}>
-                  Setujui
-                </LoadingButton>
-                <LoadingButton
-                  loading={isRejecting}
-                  type='submit'
-                  variant='contained'
-                  color='error'
-                  onClick={handleReject}
-                >
-                  Tolak
-                </LoadingButton>
-              </Stack>
-            )
+            <Stack spacing={2} useFlexGap flexDirection='row' alignItems='center'>
+              {user?.data.role === 'STAFF' && applicant?.stage === 'SURVEY' && applicant?.status === 'DRAFT' && (
+                <Button variant='contained' color='secondary' href={`/pemohon-bantuan/${id}/form-survey`}>
+                  Isi Form Survey
+                </Button>
+              )}
+              {user?.data.role === 'STAFF' &&
+                applicant?.stage === 'SURVEY' &&
+                !['MENUNGGU_KONFIRMASI_DARI_PENYELIA', 'SELESAI', 'DITOLAK'].includes(applicant?.status) && (
+                  <LoadingButton
+                    loading={isSubmittingToSupervisor}
+                    type='submit'
+                    variant='contained'
+                    color='primary'
+                    onClick={handleSubmitToSupervisor}
+                  >
+                    Ajukan ke Penyelia
+                  </LoadingButton>
+                )}
+              {user?.data.role === 'PENYELIA' &&
+                ['SURVEY', 'PRINSIP', 'SPESIFIKASI', 'PENCAIRAN', 'PERTANGGUNGJAWABAN'].includes(applicant?.stage) && (
+                  <Button variant='contained' color='secondary' href={`/pemohon-bantuan/${id}/form-survey`}>
+                    Ubah
+                  </Button>
+                )}
+            </Stack>
           )
         }
       />
@@ -136,16 +177,18 @@ export default function SurveyPage({ id }: { id: string }) {
                   valueComponent={
                     <Chip
                       color={
-                        applicant?.status === ApplicantStatusEnum.MENUNGGU_KONFIRMASI_DARI_PENYELIA
-                          ? 'warning'
-                          : applicant?.status === ApplicantStatusEnum.SIAP_UNTUK_MENGISI_FORM_PENCAIRAN ||
-                              applicant?.status === ApplicantStatusEnum.SIAP_UNTUK_MENGISI_FORM_PRINSIP ||
-                              applicant?.status === ApplicantStatusEnum.SIAP_UNTUK_MENGISI_FORM_SPESIFIKASI ||
-                              applicant?.status === ApplicantStatusEnum.SIAP_UNTUK_MENGISI_FORM_PERTANGGUNGJAWABAN
-                            ? 'info'
-                            : applicant?.status === ApplicantStatusEnum.DITOLAK
-                              ? 'error'
-                              : 'primary'
+                        applicant?.status === ApplicantStatusEnum.DRAFT
+                          ? 'secondary'
+                          : applicant?.status === ApplicantStatusEnum.MENUNGGU_KONFIRMASI_DARI_PENYELIA
+                            ? 'warning'
+                            : applicant?.status === ApplicantStatusEnum.SIAP_UNTUK_MENGISI_FORM_PENCAIRAN ||
+                                applicant?.status === ApplicantStatusEnum.SIAP_UNTUK_MENGISI_FORM_PRINSIP ||
+                                applicant?.status === ApplicantStatusEnum.SIAP_UNTUK_MENGISI_FORM_SPESIFIKASI ||
+                                applicant?.status === ApplicantStatusEnum.SIAP_UNTUK_MENGISI_FORM_PERTANGGUNGJAWABAN
+                              ? 'info'
+                              : applicant?.status === ApplicantStatusEnum.DITOLAK
+                                ? 'error'
+                                : 'primary'
                       }
                       size='small'
                       label={applicantStatusOptions.find(option => option.value === applicant?.status)?.label}

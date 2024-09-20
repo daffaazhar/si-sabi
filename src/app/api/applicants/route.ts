@@ -52,7 +52,7 @@ export const POST = async (req: Request) => {
       statement_letter: false,
       usage_report: false,
       stage: 'SURVEY',
-      status: 'MENUNGGU_KONFIRMASI_DARI_PENYELIA'
+      status: 'DRAFT'
     })
     await applicant.save()
     return NextResponse.json({ message: 'Data successfully added', data: applicant }, { status: 201 })

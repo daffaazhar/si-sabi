@@ -40,8 +40,7 @@ const ApplicantSchema = new Schema(
       required: true
     },
     institution_type: {
-      type: [String],
-      required: true
+      type: [String]
     },
     other_institution_education_type: String,
     other_institution_religion_type: String,
@@ -58,72 +57,56 @@ const ApplicantSchema = new Schema(
         'PENINGKATAN_KAPASITAS_EKONOMI',
         'PENINGKATAN_KAPASITAS_SDM',
         'PARTISIPASI_EDUKASI_PUBLIK'
-      ],
-      required: true
+      ]
     },
     year_founded: {
-      type: Number,
-      required: true
+      type: Number
     },
     ownership_status: {
       type: String,
-      enum: ['BADAN_USAHA', 'PERORANGAN'],
-      required: true
+      enum: ['BADAN_USAHA', 'PERORANGAN']
     },
     have_committee: {
-      type: Boolean,
-      required: true
+      type: Boolean
     },
     carried_out_activities: {
-      type: String,
-      required: true
+      type: String
     },
     number_of_members: {
-      type: Number,
-      required: true
+      type: Number
     },
     number_of_committee: {
-      type: Number,
-      required: true
+      type: Number
     },
     source_of_fund: {
-      type: String,
-      required: true
+      type: String
     },
     other_source_of_fund: String,
     requested_fund: {
       type: String,
-      enum: ['SARANA_PRASARANA', 'INFRASTRUKTUR_BANGUNAN', 'LAINNYA'],
-      required: true
+      enum: ['SARANA_PRASARANA', 'INFRASTRUKTUR_BANGUNAN', 'LAINNYA']
     },
     requested_fund_priority: {
-      type: String,
-      required: true
+      type: String
     },
     activity_goals: {
-      type: String,
-      required: true
+      type: String
     },
     number_of_beneficiaries: {
-      type: Number,
-      required: true
+      type: Number
     },
     required_funds: {
-      type: Number,
-      required: true
+      type: Number
     },
     required_funds_has_been_obtained_from: {
       type: [String],
-      enum: ['DANA_LEMBAGA', 'SUMBANGAN_DARI_INSTANSI'],
-      required: true
+      enum: ['DANA_LEMBAGA', 'SUMBANGAN_DARI_INSTANSI']
     },
     is_approved_by_surveyor: {
-      type: Boolean,
-      required: true
+      type: Boolean
     },
     surveyor_name: {
-      type: String,
-      required: true
+      type: String
     },
 
     // Principle

@@ -148,16 +148,18 @@ export default function Page() {
           return (
             <Chip
               color={
-                statusKey === ApplicantStatusEnum.MENUNGGU_KONFIRMASI_DARI_PENYELIA
-                  ? 'warning'
-                  : statusKey === ApplicantStatusEnum.SIAP_UNTUK_MENGISI_FORM_PENCAIRAN ||
-                      statusKey === ApplicantStatusEnum.SIAP_UNTUK_MENGISI_FORM_PRINSIP ||
-                      statusKey === ApplicantStatusEnum.SIAP_UNTUK_MENGISI_FORM_SPESIFIKASI ||
-                      statusKey === ApplicantStatusEnum.SIAP_UNTUK_MENGISI_FORM_PERTANGGUNGJAWABAN
-                    ? 'info'
-                    : statusKey === ApplicantStatusEnum.DITOLAK
-                      ? 'error'
-                      : 'primary'
+                statusKey === ApplicantStatusEnum.DRAFT
+                  ? 'secondary'
+                  : statusKey === ApplicantStatusEnum.MENUNGGU_KONFIRMASI_DARI_PENYELIA
+                    ? 'warning'
+                    : statusKey === ApplicantStatusEnum.SIAP_UNTUK_MENGISI_FORM_PENCAIRAN ||
+                        statusKey === ApplicantStatusEnum.SIAP_UNTUK_MENGISI_FORM_PRINSIP ||
+                        statusKey === ApplicantStatusEnum.SIAP_UNTUK_MENGISI_FORM_SPESIFIKASI ||
+                        statusKey === ApplicantStatusEnum.SIAP_UNTUK_MENGISI_FORM_PERTANGGUNGJAWABAN
+                      ? 'info'
+                      : statusKey === ApplicantStatusEnum.DITOLAK
+                        ? 'error'
+                        : 'primary'
               }
               size='small'
               label={applicantStatusOptions.find(option => option.value === statusKey)?.label}

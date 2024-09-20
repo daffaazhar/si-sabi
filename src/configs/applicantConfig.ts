@@ -12,6 +12,7 @@ import {
 } from '@/types/applicantTypes'
 
 export const applicantStatusOptions = [
+  { label: 'Draft', value: ApplicantStatusEnum.DRAFT },
   { label: 'Menunggu Konfirmasi dari Penyelia', value: ApplicantStatusEnum.MENUNGGU_KONFIRMASI_DARI_PENYELIA },
   { label: 'Siap untuk Mengisi Form Prinsip', value: ApplicantStatusEnum.SIAP_UNTUK_MENGISI_FORM_PRINSIP },
   { label: 'Siap untuk Mengisi Form Spesifikasi', value: ApplicantStatusEnum.SIAP_UNTUK_MENGISI_FORM_SPESIFIKASI },
