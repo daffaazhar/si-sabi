@@ -116,6 +116,9 @@ export type ApplicantType = {
   required_funds_has_been_obtained_from?: `${ApplicantRequiredFundHasBeenObtainedFromEnum}`[]
   is_approved_by_surveyor?: boolean
   surveyor_name?: string | null
+  survey_photo_1?: string | null
+  survey_photo_2?: string | null
+  survey_photo_3?: string | null
 
   // Principle
   principle_memo_number?: string | null
@@ -235,6 +238,9 @@ export type ApplicantFormSurveyDataType = {
   required_funds_has_been_obtained_from: `${ApplicantRequiredFundHasBeenObtainedFromEnum}`[]
   is_approved_by_surveyor: boolean
   surveyor_name: string
+  survey_photo_1: string | null
+  survey_photo_2: string | null
+  survey_photo_3: string | null
 }
 
 export type ApplicantFormPrinsipDataType = {

@@ -1,3 +1,6 @@
+// React & Next Imports
+import Image from 'next/image'
+
 // MUI Imports
 import {
   Box,
@@ -29,7 +32,8 @@ import {
   ApplicantPsbiScopeEnum,
   ApplicantRequestedFundEnum,
   ApplicantRequiredFundHasBeenObtainedFromEnum,
-  ApplicantSourceOfFundEnum
+  ApplicantSourceOfFundEnum,
+  ApplicantType
 } from '@/types/applicantTypes'
 
 // Config Imports
@@ -71,7 +75,10 @@ export const defaultValuesFormSurvey = {
   required_funds_has_been_obtained_from: [],
   psbi_scope: [],
   is_approved_by_surveyor: false,
-  surveyor_name: ''
+  surveyor_name: '',
+  survey_photo_1: null,
+  survey_photo_2: null,
+  survey_photo_3: null
 } as ApplicantFormSurveyDataType
 
 export const formSchemaSurvey = z.object({
@@ -106,10 +113,73 @@ export const formSchemaSurvey = z.object({
   required_funds: z.coerce.number().min(0, { message: 'Jumlah dana yang diperlukan tidak valid' }),
   required_funds_has_been_obtained_from: z.array(z.nativeEnum(ApplicantRequiredFundHasBeenObtainedFromEnum)).optional(),
   is_approved_by_surveyor: z.boolean(),
-  surveyor_name: z.string().optional()
+  surveyor_name: z.string().optional(),
+  survey_photo_1: z
+    .any()
+    .optional()
+    .refine(
+      file => {
+        if (!file || file.length === 0) return true
+        return file[0].size <= 3 * 1024 * 1024
+      },
+      { message: 'Ukuran file harus kurang dari 3 MB' }
+    )
+    .refine(
+      file => {
+        if (!file || file.length === 0) return true
+        return ['image/jpeg', 'image/jpg', 'image/png'].includes(file[0].type)
+      },
+      {
+        message: 'File yang didukung hanya JPG, JPEG, dan PNG'
+      }
+    ),
+  survey_photo_2: z
+    .any()
+    .optional()
+    .refine(
+      file => {
+        if (!file || file.length === 0) return true
+        return file[0].size <= 3 * 1024 * 1024
+      },
+      { message: 'Ukuran file harus kurang dari 3 MB' }
+    )
+    .refine(
+      file => {
+        if (!file || file.length === 0) return true
+        return ['image/jpeg', 'image/jpg', 'image/png'].includes(file[0].type)
+      },
+      {
+        message: 'File yang didukung hanya JPG, JPEG, dan PNG'
+      }
+    ),
+  survey_photo_3: z
+    .any()
+    .optional()
+    .refine(
+      file => {
+        if (!file || file.length === 0) return true
+        return file[0].size <= 3 * 1024 * 1024
+      },
+      { message: 'Ukuran file harus kurang dari 3 MB' }
+    )
+    .refine(
+      file => {
+        if (!file || file.length === 0) return true
+        return ['image/jpeg', 'image/jpg', 'image/png'].includes(file[0].type)
+      },
+      {
+        message: 'File yang didukung hanya JPG, JPEG, dan PNG'
+      }
+    )
 })
 
-export default function CreateOrEditFormSurvey({ isLoading }: { isLoading: boolean }) {
+export default function CreateOrEditFormSurvey({
+  isLoading,
+  applicant
+}: {
+  isLoading?: boolean
+  applicant?: ApplicantType
+}) {
   const formHook = useFormContext<ApplicantFormSurveyDataType>()
 
   if (isLoading) {
@@ -725,6 +795,67 @@ export default function CreateOrEditFormSurvey({ isLoading }: { isLoading: boole
             error={!!formHook.formState.errors.surveyor_name}
             helperText={formHook.formState.errors.surveyor_name?.message}
           />
+        </Grid>
+      </Grid>
+
+      <Divider sx={{ marginY: 5 }} />
+
+      <Typography fontWeight={600} fontSize={16} marginBottom={3}>
+        Foto Survey
+      </Typography>
+      <Grid container spacing={4}>
+        <Grid item sm={12}>
+          <div>
+            <FormLabel sx={{ color: 'var(--mui-palette-text-primary)', fontSize: 13 }}>
+              Foto Survey 1 (Max. 3 MB, Hanya menerima JPG, JPEG, dan PNG)
+            </FormLabel>
+            <div>
+              <input type='file' {...formHook.register('survey_photo_1')} />
+            </div>
+          </div>
+          {applicant?.survey_photo_1 ? (
+            <div className='p-4 border border-dashed border-slate-400 rounded-md mt-2 flex justify-center items-center h-96'>
+              <Image
+                loading='lazy'
+                src={applicant?.survey_photo_1}
+                alt='Foto Survey 1'
+                width={500}
+                height={500}
+                className='w-full h-full object-cover'
+              />
+            </div>
+          ) : null}
+          {!!formHook.formState.errors.survey_photo_1 && (
+            <Typography variant='body2' sx={{ color: 'var(--mui-palette-error-main)', mt: 1 }}>
+              {formHook.formState.errors.survey_photo_1?.message}
+            </Typography>
+          )}
+        </Grid>
+        <Grid item sm={12}>
+          <FormLabel sx={{ color: 'var(--mui-palette-text-primary)', fontSize: 13 }}>
+            Foto Survey 2 (Max. 3 MB, Hanya menerima JPG, JPEG, dan PNG)
+          </FormLabel>
+          <div>
+            <input type='file' {...formHook.register('survey_photo_2')} />
+          </div>
+          {!!formHook.formState.errors.survey_photo_2 && (
+            <Typography variant='body2' sx={{ color: 'var(--mui-palette-error-main)', mt: 1 }}>
+              {formHook.formState.errors.survey_photo_2?.message}
+            </Typography>
+          )}
+        </Grid>
+        <Grid item sm={12}>
+          <FormLabel sx={{ color: 'var(--mui-palette-text-primary)', fontSize: 13 }}>
+            Foto Survey 3 (Max. 3 MB, Hanya menerima JPG, JPEG, dan PNG)
+          </FormLabel>
+          <div>
+            <input type='file' {...formHook.register('survey_photo_3')} />
+          </div>
+          {!!formHook.formState.errors.survey_photo_3 && (
+            <Typography variant='body2' sx={{ color: 'var(--mui-palette-error-main)', mt: 1 }}>
+              {formHook.formState.errors.survey_photo_3?.message}
+            </Typography>
+          )}
         </Grid>
       </Grid>
     </>

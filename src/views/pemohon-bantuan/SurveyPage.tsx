@@ -47,6 +47,7 @@ import {
   applicantSourceOfFundOptions,
   applicantStatusOptions
 } from '@/configs/applicantConfig'
+import Image from 'next/image'
 
 export default function SurveyPage({ id }: { id: string }) {
   const { data: user } = useMe()
@@ -445,6 +446,85 @@ export default function SurveyPage({ id }: { id: string }) {
                       ))}
                     </Grid>
                   </FormGroup>
+                </div>
+              </Grid>
+            </Grid>
+
+            <Divider sx={{ marginY: 5 }} />
+
+            <Grid container spacing={4}>
+              <Grid item xs={12}>
+                <Typography fontWeight={600} fontSize={16}>
+                  Kesimpulan Hasil Identifikasi
+                </Typography>
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <CustomInputViewMode
+                  label='Kesesuaian Hasil Identifikasi dengan Proposal'
+                  value={applicant?.is_approved_by_surveyor ? 'Sesuai' : 'Tidak Sesuai'}
+                />
+              </Grid>
+              <Grid item xs={12} md={6}>
+                <CustomInputViewMode label='Nama Surveyor' value={applicant?.surveyor_name} />
+              </Grid>
+            </Grid>
+
+            <Divider sx={{ marginY: 5 }} />
+            <Grid container spacing={4}>
+              <Grid item xs={12}>
+                <Typography fontWeight={600} fontSize={16}>
+                  Foto Survey
+                </Typography>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant='body2'>Foto Survey 1</Typography>
+                <div className='p-4 border border-dashed border-slate-400 rounded-md mt-2 flex justify-center items-center h-96'>
+                  {applicant?.survey_photo_1 ? (
+                    <Image
+                      loading='lazy'
+                      src={applicant?.survey_photo_1}
+                      alt='Foto Survey 1'
+                      width={500}
+                      height={500}
+                      className='w-full h-full object-cover'
+                    />
+                  ) : (
+                    <Typography variant='body2'>Tidak ada foto</Typography>
+                  )}
+                </div>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant='body2'>Foto Survey 2</Typography>
+                <div className='p-4 border border-dashed border-slate-400 rounded-md mt-2 flex justify-center items-center h-96'>
+                  {applicant?.survey_photo_2 ? (
+                    <Image
+                      loading='lazy'
+                      src={applicant?.survey_photo_2}
+                      alt='Foto Survey 2'
+                      width={500}
+                      height={500}
+                      className='w-full h-full object-cover'
+                    />
+                  ) : (
+                    <Typography variant='body2'>Tidak ada foto</Typography>
+                  )}
+                </div>
+              </Grid>
+              <Grid item xs={12}>
+                <Typography variant='body2'>Foto Survey 3</Typography>
+                <div className='p-4 border border-dashed border-slate-400 rounded-md mt-2 flex justify-center items-center h-96'>
+                  {applicant?.survey_photo_3 ? (
+                    <Image
+                      loading='lazy'
+                      src={applicant?.survey_photo_3}
+                      alt='Foto Survey 3'
+                      width={500}
+                      height={500}
+                      className='w-full h-full object-cover'
+                    />
+                  ) : (
+                    <Typography variant='body2'>Tidak ada foto</Typography>
+                  )}
                 </div>
               </Grid>
             </Grid>

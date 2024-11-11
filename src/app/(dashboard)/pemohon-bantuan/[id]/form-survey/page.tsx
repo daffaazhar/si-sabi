@@ -65,13 +65,13 @@ export default function Page({ params }: { params: { id: string } }) {
         number_of_beneficiaries: applicant.number_of_beneficiaries || 0,
         required_funds: applicant.required_funds || 0,
         required_funds_has_been_obtained_from: applicant.required_funds_has_been_obtained_from || [],
-        is_approved_by_surveyor: applicant.is_approved_by_surveyor || false,
-        surveyor_name: applicant.surveyor_name || ''
+        is_approved_by_surveyor: applicant.is_approved_by_surveyor || false
       })
     }
   }, [applicant, isFetching, isPending, formHook])
 
   const onSubmit = (body: any) => {
+    console.log(body)
     const mutationPromise = new Promise((resolve, reject) => {
       update(
         {
@@ -97,7 +97,7 @@ export default function Page({ params }: { params: { id: string } }) {
       <Divider sx={{ m: '0 !important' }} />
       <CardContent>
         <FormProvider {...formHook}>
-          <CreateOrEditFormSurvey isLoading={isFetching || isPending} />
+          <CreateOrEditFormSurvey isLoading={isFetching || isPending} applicant={applicant} />
         </FormProvider>
       </CardContent>
       <Divider sx={{ m: '0 !important' }} />

@@ -108,6 +108,9 @@ const ApplicantSchema = new Schema(
     surveyor_name: {
       type: String
     },
+    survey_photo_1: String,
+    survey_photo_2: String,
+    survey_photo_3: String,
 
     // Principle
     principle_memo_number: String,
